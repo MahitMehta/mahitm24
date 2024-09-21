@@ -7,11 +7,9 @@ export default function Home() {
 	return (
 		<div className="flex flex-col items-center p-3">
 			<Stars />
-			<div className="w-full h-[300px] fixed bottom-0 opacity-50 building-container" />
-			<div className="mt-[25vh] w-full overflow-visible max-w-screen-md h-[300px] relative">
-				<div
-					className="left-0 absolute bottom-0 w-[calc(109%)] billboard flex items-end"
-				>
+			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
+			<div className="mt-[15vh] sm:mt-[25vh] w-full overflow-visible max-w-screen-md h-[300px] relative">
+				<div className="left-0 absolute bottom-0 w-[calc(109%)] billboard flex items-end">
 					<img
 						className="w-full"
 						src="/svg/billboard.svg"
@@ -20,7 +18,7 @@ export default function Home() {
 					/>
 				</div>
 			</div>
-			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 bg-brand-blue">
+			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 building bg-brand-blue">
 				<p className="text-base">
 					Hello, I’m{" "}
 					<Link href="/" className="text-brand-yellow highlighted">

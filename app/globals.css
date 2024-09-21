@@ -17,20 +17,32 @@
 body {
 	color: var(--foreground);
 	background: var(--background);
+	overflow-x: hidden;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
 section {
 	filter: brightness(0.5);
 	animation: flicker 0.2s 2 forwards;
-	animation-delay: 0.5s;
+	animation-delay: 0.25s;
 }
 
 .billboard {
 	filter: brightness(0.5);
 	transform: translateY(17px);
 	animation: flicker 0.2s 2 forwards;
-	animation-delay: 0.5s;
+	animation-delay: 0.25s;
+}
+
+.building::after {
+	content: "";
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	transform: translate(100%, 0px);
+	width: 10px;
+	height: 100%;
+	background: #0E1417;
 }
 
 @keyframes flicker {
@@ -50,7 +62,7 @@ section {
 
 .building-container {
 	background-image: url("/svg/buildings.svg");	
-	animation: slide 30s linear infinite;
+	animation: slide-a 30s linear infinite;
 }
 
 .highlighted:hover {
@@ -66,14 +78,17 @@ section {
 	.billboard {
 		transform: translateY(6%);
 	}
+	.building {
+		margin-bottom: 300px;
+	}
 }
 
-@keyframes slide {
+@keyframes slide-a {
 	0% {
 		background-position-x: 0%;
 	}
 	100% {
-		background-position-x: 100%;
+		background-position-x: -100%
 	}
 }
 
