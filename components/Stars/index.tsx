@@ -34,7 +34,6 @@ class Star {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		console.log(this.hexOpacity);
 		const r = Math.floor(-255 * (1 - this.hexOpacity) + 255);
 		const g = Math.floor(-233 * (1 - this.hexOpacity) + 233);
 		const b = Math.floor(-159 * (1 - this.hexOpacity) + 159);
@@ -66,7 +65,7 @@ const Stars = () => {
 		if (!ctx) return;
 
 		const { width, height } = window.screen;
-		const adjustedHeight = height - 300 > 0 ? height - 300 : height;
+		const adjustedHeight = height; // height > 300 ? height - 300 : height;
 
 		canvas.width = width;
 		canvas.height = adjustedHeight;

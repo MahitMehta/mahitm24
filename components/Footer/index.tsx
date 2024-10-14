@@ -1,25 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
+import Card from "../Card";
 
 const Footer = () => {
 	return (
-		<footer className="mt-auto pt-10 flex sm:flex-row flex-col items-center gap-2 sm:justify-between sm:items-end">
-			<a target="_blank" rel="noopener noreferrer" href="https://notbyai.fyi/">
-				<Image
-					width={131}
-					height={42}
-					alt="Not by AI"
-					src="/images/notbyai.png"
-				/>
-			</a>
-			<div className="flex gap-1">
-				<span>©2024 Mahit Mehta</span>
-				<span>✦</span>
-				<span className="highlighted">
-					<Link href="/">colophon</Link>
-				</span>
-			</div>
-		</footer>
+		<Card className="mt-auto mt-10">
+			<footer className="flex sm:flex-row flex-col items-center gap-2 sm:justify-between">
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="https://notbyai.fyi/"
+				>
+					<Image
+						width={131}
+						height={42}
+						alt="Not by AI"
+						src="/images/notbyai.png"
+					/>
+				</a>
+				<div className="flex gap-1">
+					<span>©2024 Mahit Mehta</span>
+					<span className="text-brand-yellow">✦</span>
+					<span className="highlighted">
+						<Link href="/">colophon</Link>
+					</span>
+				</div>
+			</footer>
+		</Card>
 	);
 };
 
