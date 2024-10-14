@@ -21,7 +21,7 @@ export default function Home() {
 					/>
 				</div>
 			</div>
-			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 building bg-brand-blue">
+			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<h1 className="text-2xl">Welcome,</h1>
 				<Card>
 					<span className="text-base">
@@ -88,6 +88,7 @@ export default function Home() {
 						description="A complete VPN service with deployable dockerized WireGuard nodes, control plane (for managing nodes), and a Flutter mobile app as a client."
 					/>
 				</div>
+				<div className="p-4" />
 				<Footer />
 			</section>
 		</div>

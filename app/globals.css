@@ -96,9 +96,6 @@ section {
 	.billboard {
 		transform: translateY(6%);
 	}
-	.building {
-		margin-bottom: 300px;
-	}
 }
 
 @keyframes slide-a {

@@ -4,7 +4,7 @@ import Card from "../Card";
 
 const Footer = () => {
 	return (
-		<Card className="mt-auto mt-10">
+		<Card className="mt-auto">
 			<footer className="flex sm:flex-row flex-col items-center gap-2 sm:justify-between">
 				<a
 					target="_blank"
