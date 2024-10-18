@@ -1,3 +1,4 @@
+import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ExpandableCard from "@/components/Card/Expandable";
 import ProjectCard from "@/components/Card/Project";
@@ -15,16 +16,7 @@ export default function Home() {
 		<div className="flex flex-col items-center p-3">
 			<Stars />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
-			<div className="mt-[15vh] sm:mt-[25vh] w-full overflow-visible max-w-screen-md h-[300px] relative">
-				<div className="left-0 absolute bottom-0 w-[calc(109%)] billboard flex items-end">
-					<img
-						className="w-full"
-						src="/svg/billboard.svg"
-						alt="Building"
-						loading="eager"
-					/>
-				</div>
-			</div>
+			<Billboard />
 			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<h1 className="text-2xl">Welcome,</h1>
 				<Card>
@@ -60,19 +52,22 @@ export default function Home() {
 				</Card>
 				<div className="flex justify-around mt-8 gap-6">
 					<Image
+						draggable={false}
 						src="/svg/rubik_window.svg"
 						alt="Rubik's Cube Window"
 						width={175}
 						height={300}
 					/>
 					<Image
-						src="/svg/window.svg"
+						draggable={false}
+						src="/svg/pumpkin_window.svg"
 						alt="Window"
 						className="window-disappear-one"
 						width={175}
 						height={300}
 					/>
 					<Image
+						draggable={false}
 						src="/svg/trumpet_window.svg"
 						alt="Trumpet Cube Window"
 						width={175}
@@ -151,16 +146,22 @@ export default function Home() {
 						}
 						label={"Resume [2024]"}
 					>
-						<Image
-							draggable={false}
-							sizes="100vw"
-							quality={100}
-							width={0}
-							height={0}
-							style={{ width: "100%", height: "auto" }}
-							src="/cdn/resume.webp"
-							alt={"Resume"}
-						/>
+						<div className="relative">
+							<Image
+								draggable={false}
+								sizes="100vw"
+								quality={100}
+								width={0}
+								height={0}
+								style={{
+									width: "100%",
+									height: "auto",
+									filter: "invert(1)",
+								}}
+								src="/cdn/resume.webp"
+								alt={"Resume"}
+							/>
+						</div>
 					</ExpandableCard>
 				</section>
 				<div className="p-4" />

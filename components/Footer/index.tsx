@@ -41,7 +41,7 @@ const Footer = () => {
 					<span className="text-brand-yellow mx-2">✦</span>
 					<span className="text-nowrap">© 2024-25 Mahit Mehta</span>
 				</div>
-				<span className="md:hidden h-[1px] w-14 bg-white inline-block my-2 bg-opacity-25" />
+				<span className="md:hidden h-[1px] w-12 bg-brand-blue inline-block my-2" />
 				<div className="flex gap-1">
 					<div className="flex gap-3 items-center px-1">
 						<LinkIcon href="https://github.com/MahitMehta" icon={faGithub} />
