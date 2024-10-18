@@ -30,7 +30,7 @@ const LinkIcon: React.FC<LinkIconProps> = ({ href, icon }) => {
 
 const Footer = () => {
 	return (
-		<Card className="mt-auto">
+		<Card className="py-3 md:py-1 mt-auto">
 			<footer className="min-h-8 flex sm:flex-row flex-col-reverse items-center gap-2 sm:justify-between">
 				<div className="flex h-full items-center">
 					<Link href="/" className="w-full h-full">
@@ -41,6 +41,7 @@ const Footer = () => {
 					<span className="text-brand-yellow mx-2">✦</span>
 					<span className="text-nowrap">© 2024-25 Mahit Mehta</span>
 				</div>
+				<span className="md:hidden h-[1px] w-14 bg-white inline-block my-2 bg-opacity-25" />
 				<div className="flex gap-1">
 					<div className="flex gap-3 items-center px-1">
 						<LinkIcon href="https://github.com/MahitMehta" icon={faGithub} />

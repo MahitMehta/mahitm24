@@ -48,7 +48,7 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
 					)}
 				</Card>
 			</button>
-			{expanded && <Card className="mt-3">{children}</Card>}
+			{expanded && <Card className="!px-1 mt-3">{children}</Card>}
 		</>
 	);
 };

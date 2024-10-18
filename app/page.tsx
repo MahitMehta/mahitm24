@@ -81,11 +81,7 @@ export default function Home() {
 				</div>
 				<section className="mt-6">
 					<h1 className="text-2xl">Projects</h1>
-					<h2>
-						*MahitM-SVC = A Service part of the MahitM Suite of Productivity
-						Enhancing Products
-					</h2>
-					<div className="grid gap-3 grid-cols-2">
+					<div className="grid gap-3 md:grid-cols-2">
 						<ProjectCard
 							title="Mrial"
 							isMahitMSVC
@@ -109,6 +105,10 @@ export default function Home() {
 							description="A mobile gradebook application for school's who used Genesis parent portal. Over 3,000 students have used this app over it's lifetime."
 						/>
 					</div>
+					<h2 className="my-1 px-2">
+						*MahitM-SVC = A Service part of the MahitM Suite of Productivity
+						Enhancing Products
+					</h2>
 					<div className="mt-3">
 						<a
 							rel="noopener noreferrer"
