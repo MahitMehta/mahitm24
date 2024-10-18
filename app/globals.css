@@ -112,3 +112,27 @@ section {
 		text-wrap: balance;
 	}
 }
+
+.go-arrow-container svg[data-go-arrow] {
+	transition: 150ms ease;
+	transform: translateX(-5px);
+}
+
+.go-arrow-container svg[data-go-arrow] path[class$="octicon-chevrow-stem"] {
+	transition: 150ms ease;
+	stroke-dasharray: 100;
+	stroke-dashoffset: 100;
+}
+
+.go-arrow-container:hover svg[data-go-arrow] {
+	transition: 150ms ease;
+	transform: translateX(0px);
+}
+
+.go-arrow-container:hover
+	svg[data-go-arrow]
+	path[class$="octicon-chevrow-stem"] {
+	transition: 100ms ease;
+	stroke-dasharray: 0;
+	stroke-dashoffset: 0;
+}
