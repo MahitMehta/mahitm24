@@ -110,8 +110,8 @@ export default function Home() {
 							target="_blank"
 							href="https://github.com/MahitMehta"
 						>
-							<Card className="flex justify-center items-center">
-								<span className="go-arrow-container cursor-pointer inline-flex items-center highlighted">
+							<Card className="go-arrow-container flex justify-center items-center">
+								<span className="cursor-pointer inline-flex items-center highlighted">
 									<span>
 										View <span className="text-brand-yellow">More</span>{" "}
 										Projects
