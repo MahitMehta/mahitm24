@@ -1,19 +1,33 @@
 import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
+import ContactCard from "@/components/Card/Contact";
 import ExpandableCard from "@/components/Card/Expandable";
 import ProjectCard from "@/components/Card/Project";
 import Footer from "@/components/Footer";
 import GoArrow from "@/components/GoArrow";
 import HighlightPopUp from "@/components/Popup";
 import Stars from "@/components/Stars";
-import { faExpand, faFileDownload } from "@fortawesome/free-solid-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import {
+	faEnvelope,
+	faExpand,
+	faFileDownload,
+	faLock,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import {
+	ArrowDownCircleIcon,
+	LockClosedIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Home() {
 	return (
-		<div className="flex flex-col items-center p-3">
+		<div
+			id="home"
+			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
+		>
 			<Stars />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard />
@@ -30,7 +44,7 @@ export default function Home() {
 						Computer Science. In my free time I love to program, play table
 						tennis, and watch{" "}
 						<HighlightPopUp highlight="K-dramas">
-							<ul className="w-[175px] list-disc pl-4">
+							<ul className="w-[175px] list-decimal pl-4">
 								<li>Crash Landing on You</li>
 								<li>It's Okay to not be Okay</li>
 								<li>Twinkling Watermelon</li>
@@ -97,7 +111,7 @@ export default function Home() {
 						<ProjectCard
 							title="Genesus"
 							projectURL="https://github.com/gradebook-app"
-							description="A mobile gradebook application for school's who used Genesis parent portal. Over 3,000 students have used this app over it's lifetime."
+							description="A mobile gradebook application for schools who used Genesis parent portal. Over 3,000 students have used this app over it's lifetime."
 						/>
 					</div>
 					<h2 className="my-1 px-2">
@@ -126,7 +140,7 @@ export default function Home() {
 					<h1 className="text-2xl">Career</h1>
 					<ExpandableCard
 						rightIcon={
-							<div className="flex gap-3">
+							<div className="flex gap-3 items-center">
 								<a
 									download
 									href="/resume"
@@ -137,7 +151,7 @@ export default function Home() {
 								<Link
 									rel="noopener noreferrer"
 									target="_blank"
-									href="/cdn/resume"
+									href="/cdn/v1/resume"
 									className="hover:text-brand-yellow transition-colors"
 								>
 									<FontAwesomeIcon icon={faExpand} />
@@ -158,11 +172,42 @@ export default function Home() {
 									height: "auto",
 									filter: "invert(1)",
 								}}
-								src="/cdn/resume.webp"
+								src="/cdn/v1/t/q_auto:best/resume.webp"
 								alt={"Resume"}
 							/>
 						</div>
 					</ExpandableCard>
+				</section>
+				<section className="mt-6">
+					<h1 className="text-2xl">Contact</h1>
+					<div className="grid gap-3 md:grid-cols-2">
+						<ContactCard
+							link="mailto:contact@mahitm.com"
+							icon={faEnvelope}
+							name="Email"
+							value="contact@mahitm.com"
+						/>
+						<ContactCard
+							link="https://discord.com"
+							icon={faDiscord}
+							name="Discord"
+							value="@MahitMehta"
+						/>
+					</div>
+					<a
+						className="mt-3 block ml-2"
+						target="_blank"
+						rel="noopener noreferrer"
+						href="https://keyoxide.org/aspe%3Akeyoxide.org%3AY36Q6VEPBFR3HWQXJKA35WGFP4"
+					>
+						<span>
+							<FontAwesomeIcon className="mr-2" icon={faLock} />
+							Identity Proof ={" "}
+							<span className="bg-brand-blue-darker py-[1px] px-2 rounded-sm">
+								aspe:keyoxide.org:Y36Q6VEPBFR3HWQXJKA35WGFP4
+							</span>
+						</span>
+					</a>
 				</section>
 				<div className="p-4" />
 				<Footer />

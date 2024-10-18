@@ -7,7 +7,12 @@ const nextConfig = {
 				destination: "/api/resume",
 			},
 			{
-				source: "/cdn/:slug*",
+				source: "/cdn/v1/t/:transformations/:slug*",
+				destination:
+					"https://res.cloudinary.com/mahitm-cdn/image/upload/:transformations/mahitm/:slug*",
+			},
+			{
+				source: "/cdn/v1/:slug*",
 				destination:
 					"https://res.cloudinary.com/mahitm-cdn/image/upload/mahitm/:slug*",
 			},

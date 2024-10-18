@@ -1,6 +1,8 @@
 "use client";
 
-import { use, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+
+const STAR_COUNT = 100;
 
 class Star {
 	private x: number;
@@ -8,6 +10,12 @@ class Star {
 	private hexOpacity: number;
 	private speed: number;
 	private dimming: boolean;
+	private color: number[];
+
+	private static COLORS = [
+		[255, 233, 159],
+		[255, 255, 255],
+	];
 
 	constructor(x: number, y: number) {
 		this.x = x;
@@ -15,6 +23,7 @@ class Star {
 		this.speed = Math.random() * 0.01;
 		this.hexOpacity = 0x00;
 		this.dimming = false;
+		this.color = Star.COLORS[Math.floor(Math.random() * Star.COLORS.length)];
 	}
 
 	update(ctx: CanvasRenderingContext2D) {
@@ -34,9 +43,15 @@ class Star {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		const r = Math.floor(-255 * (1 - this.hexOpacity) + 255);
-		const g = Math.floor(-233 * (1 - this.hexOpacity) + 233);
-		const b = Math.floor(-159 * (1 - this.hexOpacity) + 159);
+		const r = Math.floor(
+			-this.color[0] * (1 - this.hexOpacity) + this.color[0],
+		);
+		const g = Math.floor(
+			-this.color[1] * (1 - this.hexOpacity) + this.color[1],
+		);
+		const b = Math.floor(
+			-this.color[2] * (1 - this.hexOpacity) + this.color[2],
+		);
 		ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
 		ctx.font = "10px Arial";
 		ctx.fillText("✦", this.x, this.y);
@@ -65,14 +80,13 @@ const Stars = () => {
 		if (!ctx) return;
 
 		const { width, height } = window.screen;
-		const adjustedHeight = height; // height > 300 ? height - 300 : height;
 
 		canvas.width = width;
-		canvas.height = adjustedHeight;
+		canvas.height = height;
 
-		for (let i = 0; i < 50; i++) {
+		for (let i = 0; i < STAR_COUNT; i++) {
 			const x = Math.random() * width;
-			const y = Math.random() * adjustedHeight;
+			const y = Math.random() * height;
 			stars.current.push(new Star(x, y));
 		}
 

@@ -40,7 +40,11 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
 					/>
 					<span className="cursor-pointer highlighted">{label}</span>
 					{rightIcon ? (
-						<span onKeyDown={() => {}} onClick={(e) => e.stopPropagation()}>
+						<span
+							className="flex items-center"
+							onKeyDown={() => {}}
+							onClick={(e) => e.stopPropagation()}
+						>
 							{rightIcon}
 						</span>
 					) : (
