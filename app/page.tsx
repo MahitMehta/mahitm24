@@ -6,7 +6,7 @@ import ProjectCard from "@/components/Card/Project";
 import Footer from "@/components/Footer";
 import GoArrow from "@/components/GoArrow";
 import HighlightPopUp from "@/components/Popup";
-import Stars from "@/components/Stars";
+import Sky from "@/components/Sky";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
 	faEnvelope,
@@ -28,7 +28,7 @@ export default function Home() {
 			id="home"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
 		>
-			<Stars />
+			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard />
 			<section className="z-10 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
@@ -67,14 +67,14 @@ export default function Home() {
 				<div className="flex justify-around mt-8 gap-6">
 					<Image
 						draggable={false}
-						src="/svg/rubik_window.svg"
-						alt="Rubik's Cube Window"
+						src="/svg/plant_window.svg"
+						alt="Window"
 						width={175}
 						height={300}
 					/>
 					<Image
 						draggable={false}
-						src="/svg/pumpkin_window.svg"
+						src="/svg/basic_window.svg"
 						alt="Window"
 						className="window-disappear-one"
 						width={175}
@@ -82,8 +82,8 @@ export default function Home() {
 					/>
 					<Image
 						draggable={false}
-						src="/svg/trumpet_window.svg"
-						alt="Trumpet Cube Window"
+						src="/svg/purdue_window.svg"
+						alt="Window"
 						width={175}
 						height={300}
 					/>
