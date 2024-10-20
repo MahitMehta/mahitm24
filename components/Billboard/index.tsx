@@ -6,9 +6,9 @@ import SpiderJSON from "@/public/lottie/spider.json";
 
 const Billboard = () => {
 	return (
-		<div className="mt-[5vh] sm:mt-[25vh] w-full overflow-visible max-w-screen-md h-[300px] relative">
+		<div className="z-50 mt-[5vh] sm:mt-[25vh] w-full overflow-visible max-w-screen-md h-[300px] relative">
 			<div className="left-0 absolute bottom-0 w-[calc(109%)] billboard">
-				<div className="absolute left-[58%] top-0">
+				<div className="absolute left-[48%] md:left-[58%] top-0">
 					<Lottie
 						options={{
 							loop: false,
