@@ -1,3 +1,5 @@
+![Vercel Deploy](https://deploy-badge.vercel.app/vercel/mahitm)
+
 # Overview
 
 Repository for Mahit Mehta's 2024 refreshed personal website. Give it a look at [mahitm.com](https://mahitm.com)

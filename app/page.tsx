@@ -1,3 +1,5 @@
+"use client";
+
 import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ContactCard from "@/components/Card/Contact";
@@ -17,6 +19,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import PosterWindowSVG from "@/public/svg/poster_window.svg";
+import BasicWindowSVG from "@/public/svg/window.svg";
+import StickerWindow from "@/public/svg/sticker_window.svg";
 
 export default function Home() {
 	return (
@@ -61,28 +66,13 @@ export default function Home() {
 					</p>
 				</Card>
 				<div className="flex justify-around mt-8 gap-6">
-					<Image
-						draggable={false}
-						src="/svg/poster_window.svg"
-						alt="Window"
-						width={175}
-						height={300}
-					/>
-					<Image
-						draggable={false}
-						src="/svg/shine_window.svg"
-						alt="Window"
+					<PosterWindowSVG width="175" height="300" />
+					<BasicWindowSVG
 						className="window-disappear-one"
-						width={175}
-						height={300}
+						width="175"
+						height="300"
 					/>
-					<Image
-						draggable={false}
-						src="/svg/sticker_window.svg"
-						alt="Window"
-						width={175}
-						height={300}
-					/>
+					<StickerWindow width="175" height="300" />
 				</div>
 				<section className="mt-6">
 					<h1 className="text-2xl">Projects</h1>
