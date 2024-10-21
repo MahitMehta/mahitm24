@@ -90,7 +90,14 @@ export default function Home() {
 					</div>
 					<h2 className="my-1 px-2">
 						*MahitM-SVC = A Service part of the MahitM Suite of Productivity
-						Enhancing Products
+						Enhancing Products.{" "}
+						<Link
+							href="/svc"
+							className="inline-flex items-center go-arrow-container highlighted text-brand-yellow"
+						>
+							<span>SVC Search</span>
+							<GoArrow className="inline ml-1" />
+						</Link>
 					</h2>
 					<div className="mt-3">
 						<a

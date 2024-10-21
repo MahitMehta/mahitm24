@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 const STAR_COUNT = 75;
 const MAX_DROPLETS = 100;
@@ -73,7 +74,7 @@ class Droplet {
 	constructor(x: number, y: number) {
 		this.x = x;
 		this.y = y;
-		this.width = 1;
+		this.width = 2;
 		this.speed =
 			Math.floor(Math.random() * (Droplet.MAX_SPEED - Droplet.MIN_SPEED + 1)) +
 			Droplet.MIN_SPEED;
@@ -105,9 +106,14 @@ class Droplet {
 	}
 }
 
-const Sky = () => {
+interface SkyProps {
+	seasons?: boolean;
+}
+
+const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 	const skyCanvasRef = useRef<HTMLCanvasElement | null>(null);
 	const precipCanvasRef = useRef<HTMLCanvasElement | null>(null);
+	const frameId = useRef<number | null>(null);
 
 	const stars = useRef<Star[]>([]);
 	const droplets = useRef<Droplet[]>([]);
@@ -121,52 +127,90 @@ const Sky = () => {
 		) => {
 			skyCtx.clearRect(0, 0, skyCanvas.width, skyCanvas.height);
 			precipCtx.clearRect(0, 0, precipCanvas.width, precipCanvas.height);
-			requestAnimationFrame(
+			frameId.current = requestAnimationFrame(
 				render.bind(undefined, skyCanvas, skyCtx, precipCanvas, precipCtx),
 			);
 
 			for (const star of stars.current) {
 				star.update(skyCtx);
 			}
-			// for (const droplet of droplets.current) {
-			// 	droplet.update(precipCtx);
-			// }
+
+			if (!seasons) return;
+
+			for (const droplet of droplets.current) {
+				droplet.update(precipCtx);
+			}
 		},
-		[],
+		[seasons],
+	);
+
+	const resetElements = useCallback(() => {
+		stars.current = [];
+		droplets.current = [];
+	}, []);
+
+	const populateCanvasElements = useCallback(
+		(skyCanvas: HTMLCanvasElement, precipCanvas: HTMLCanvasElement) => {
+			if (frameId.current) {
+				cancelAnimationFrame(frameId.current);
+			}
+
+			resetElements();
+
+			const skyCtx = skyCanvas.getContext("2d");
+			const precipCtx = precipCanvas.getContext("2d");
+
+			if (!skyCtx || !precipCtx) return;
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+
+			skyCanvas.width = width;
+			skyCanvas.height = height;
+
+			precipCanvas.width = width;
+			precipCanvas.height = height;
+
+			for (let i = 0; i < STAR_COUNT; i++) {
+				const x = Math.random() * width;
+				const y = Math.random() * height;
+				stars.current.push(new Star(x, y));
+			}
+
+			if (seasons) {
+				for (let i = 0; i < MAX_DROPLETS; i++) {
+					const x = Math.random() * width;
+					const y = Math.random() * height;
+					droplets.current.push(new Droplet(x, y));
+				}
+			}
+
+			render(skyCanvas, skyCtx, precipCanvas, precipCtx);
+		},
+		[render, resetElements, seasons],
 	);
 
 	useEffect(() => {
 		const skyCanvas = skyCanvasRef.current;
 		const precipCanvas = precipCanvasRef.current;
 
-		if (!skyCanvas || !precipCanvas || stars.current.length) return;
+		if (!skyCanvas || !precipCanvas) return;
+		if (stars.current.length !== 0) return;
 
-		const skyCtx = skyCanvas.getContext("2d");
-		const precipCtx = precipCanvas.getContext("2d");
-		if (!skyCtx || !precipCtx) return;
+		populateCanvasElements(skyCanvas, precipCanvas);
+	}, [populateCanvasElements]);
 
-		const { width, height } = window.screen;
+	const handleResize = useDebouncedCallback(() => {
+		const skyCanvas = skyCanvasRef.current;
+		const precipCanvas = precipCanvasRef.current;
 
-		skyCanvas.width = width;
-		skyCanvas.height = height;
+		if (!skyCanvas || !precipCanvas) return;
+		populateCanvasElements(skyCanvas, precipCanvas);
+	}, 500);
 
-		precipCanvas.width = width;
-		precipCanvas.height = height;
-
-		for (let i = 0; i < STAR_COUNT; i++) {
-			const x = Math.random() * width;
-			const y = Math.random() * height;
-			stars.current.push(new Star(x, y));
-		}
-
-		for (let i = 0; i < MAX_DROPLETS; i++) {
-			const x = Math.random() * width;
-			const y = Math.random() * height;
-			droplets.current.push(new Droplet(x, y));
-		}
-
-		render(skyCanvas, skyCtx, precipCanvas, precipCtx);
-	}, [render]);
+	useEffect(() => {
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, [handleResize]);
 
 	return (
 		<>
