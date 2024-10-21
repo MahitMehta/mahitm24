@@ -2,7 +2,7 @@ import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ContactCard from "@/components/Card/Contact";
 import ExpandableCard from "@/components/Card/Expandable";
-import ProjectCard from "@/components/Card/Project";
+import ProjectCard, { EProjectTag } from "@/components/Card/Project";
 import Footer from "@/components/Footer";
 import GoArrow from "@/components/GoArrow";
 import HighlightPopUp from "@/components/Popup";
@@ -57,7 +57,7 @@ export default function Home() {
 						technologies such as React, node.js HTTP servers, and No-SQL
 						databases. Later, I transitioned to building mobile applications in
 						Flutter and React Native. Recently, I’ve been working with ⚙{" "}
-						<span className="text-red-400">Rust</span> to develop a remote
+						<span style={{ color: "#AA2704" }}>Rust</span> to develop a remote
 						desktop application, a mesh VPN, and other cool stuff!
 					</p>
 				</Card>
@@ -68,22 +68,45 @@ export default function Home() {
 						<ProjectCard
 							title="Mrial"
 							isMahitMSVC
+							tags={[
+								EProjectTag.Rust,
+								EProjectTag.Linux,
+								EProjectTag.TLS,
+								EProjectTag.FEC,
+							]}
 							projectURL="https://github.com/MahitMehta/mrial?tab=readme-ov-file#description"
 							description="A remote desktop application with a server optimized for ARM-based linux and player optimized for ARM64 MacOS."
 						/>
 						<ProjectCard
 							title="MahitM VPN"
 							isMahitMSVC
+							tags={[
+								EProjectTag.Rust,
+								EProjectTag.Linux,
+								EProjectTag.Docker,
+								EProjectTag.WireGuard,
+							]}
 							projectURL="https://github.com/MahitMehta/mahitm_vpn_node?tab=readme-ov-file#mahitm-vpn-node"
 							description="A complete VPN service with deployable dockerized WireGuard nodes, control plane (for managing nodes), and a Flutter mobile app as a client."
 						/>
 						<ProjectCard
 							title="C4T-Web"
+							tags={[
+								EProjectTag.React,
+								EProjectTag.NodeJS,
+								EProjectTag.Redis,
+								EProjectTag.NextJS,
+							]}
 							projectURL="https://github.com/code4tomorrow/c4t-web"
 							description="A web application for Code4Tomorrow, a non-profit organization that teaches computer science to underprivileged students."
 						/>
 						<ProjectCard
 							title="Genesus"
+							tags={[
+								EProjectTag.ReactNative,
+								EProjectTag.Python,
+								EProjectTag.Redis,
+							]}
 							projectURL="https://github.com/gradebook-app"
 							description="A mobile gradebook application for schools who used Genesis parent portal. Over 3,000 students have used this app over it's lifetime."
 						/>

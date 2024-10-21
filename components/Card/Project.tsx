@@ -1,9 +1,79 @@
 import Card from ".";
 import GoArrow from "../GoArrow";
 
+export enum EProjectTag {
+	React = "React",
+	NodeJS = "Node.js",
+	NextJS = "Next.js",
+	Redis = "Redis",
+	Rust = "Rust",
+	Docker = "Docker",
+	ReactNative = "React Native",
+	WireGuard = "WireGuard",
+	Linux = "Linux",
+	TLS = "TLS",
+	UDP = "UDP",
+	FEC = "FEC",
+	Flutter = "Flutter",
+	CMS = "CMS",
+	Python = "Python",
+}
+
+const getTagColor = (tag: EProjectTag) => {
+	switch (tag) {
+		case EProjectTag.React:
+			return "#61dbfb";
+		case EProjectTag.NodeJS:
+			return "#43853d";
+		case EProjectTag.NextJS:
+			return "#ffffff";
+		case EProjectTag.Redis:
+			return "#A41E11";
+		case EProjectTag.Rust:
+			return "#AA2704";
+		case EProjectTag.Docker:
+			return "#0db7ed";
+		case EProjectTag.ReactNative:
+			return "#61dbfb";
+		case EProjectTag.WireGuard:
+			return "#88171a";
+		case EProjectTag.Linux:
+			return "#9d853c";
+		case EProjectTag.TLS:
+			return "#cc58d6";
+		case EProjectTag.Flutter:
+			return "#027DFD";
+		case EProjectTag.Python:
+			return "#306998";
+		default:
+			return "#ffffff";
+	}
+};
+
+interface ProjectTagProps {
+	value: EProjectTag;
+}
+
+const ProjectTag: React.FC<ProjectTagProps> = ({ value }) => {
+	return (
+		<span
+			style={{
+				color: getTagColor(value),
+				letterSpacing: "0.75px",
+			}}
+			className={
+				"px-2 inline-block border-solid border-[1px] text-white rounded-sm text-[14px] font-bold"
+			}
+		>
+			{value}
+		</span>
+	);
+};
+
 interface ProjectCardProps {
 	title: string;
 	description: string;
+	tags?: EProjectTag[];
 	projectURL?: string;
 	isMahitMSVC?: boolean;
 }
@@ -11,6 +81,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({
 	title,
 	description,
+	tags = [],
 	projectURL,
 	isMahitMSVC = false,
 }) => {
@@ -36,6 +107,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 					</>
 				)}
 			</p>
+			{tags.length > 0 && (
+				<div className="flex my-2 gap-3">
+					{tags.map((tag) => (
+						<ProjectTag key={tag} value={tag} />
+					))}
+				</div>
+			)}
 		</Card>
 	);
 };
