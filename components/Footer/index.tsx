@@ -65,9 +65,13 @@ const Footer = () => {
 						/>
 					</div>
 					<span className="text-brand-yellow mx-2">✦</span>
-					<span className="highlighted">
-						<Link href="/">colophon</Link>
-					</span>
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href="https://github.com/MahitMehta/mahitm24"
+					>
+						<span className="highlighted">colophon</span>
+					</a>
 				</div>
 			</footer>
 		</Card>

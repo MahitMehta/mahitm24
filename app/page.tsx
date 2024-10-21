@@ -67,14 +67,14 @@ export default function Home() {
 				<div className="flex justify-around mt-8 gap-6">
 					<Image
 						draggable={false}
-						src="/svg/plant_window.svg"
+						src="/svg/poster_window.svg"
 						alt="Window"
 						width={175}
 						height={300}
 					/>
 					<Image
 						draggable={false}
-						src="/svg/basic_window.svg"
+						src="/svg/shine_window.svg"
 						alt="Window"
 						className="window-disappear-one"
 						width={175}
@@ -82,7 +82,7 @@ export default function Home() {
 					/>
 					<Image
 						draggable={false}
-						src="/svg/purdue_window.svg"
+						src="/svg/sticker_window.svg"
 						alt="Window"
 						width={175}
 						height={300}

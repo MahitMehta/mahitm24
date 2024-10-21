@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Overview
 
-## Getting Started
+Repository for Mahit Mehta's 2024 refreshed personal website. Give it a look at [mahitm.com](https://mahitm.com)
 
-First, run the development server:
+# Colophon
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+>This project is a standard [Next.js 14.2](https://nextjs.org/docs) website bootstrapped with `create-next-app`. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Here you can find various behind-the-scenes details about this website:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Inspiration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Many of the ideas, including the document-styled format of the website, were inspired by one of personal favorite open-source developers: Val Packett. Check out her personal website at [val.packett.cool](https://val.packett.cool/)!
 
-## Learn More
+## Hosting
 
-To learn more about Next.js, take a look at the following resources:
+This website is hosted by [Vercel](vercel.app) as it is the most convenient platform to host a `Next.js`. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## SVGs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Most of the SVGs, including the billboard and windows, were created by me using [Figma](https://figma.com). However, some SVGs, including the background buildings, are modified versions of SVGs available at [undraw.co](https://undraw.co) (Love this website). 
 
-## Deploy on Vercel
+Furthermore, the SVG animations use free [Lottiefiles](https://lottiefiles.com/).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Icons
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The icons are a combination of [FontAwesome's](https://fontawesome.com/) free collection of icons and [Heroicon's](https://heroicons.com/) slick `outline` icons.
+
+## Typefaces
+
+This website is entirely set in a new font, including the billboard SVG, I've been testing out: [Jersey 15](https://fonts.google.com/specimen/Jersey+15).
+
+## Browser support
+
+This website is best viewed on a desktop version of `Google Chrome`, however, any reasonably popular and recent browsers should be supported.
+
+# Run Project
+
+1. Clone this repository
+2. Ensure `node` (verison >= 18.17) and `npm` are installed
+3. Install dependencies: `npm install`
+4. Run local development server: `npm run dev`
+
+> For information on how to develop this website, please reference the  [Next.js Documentation](https://nextjs.org/docs).
