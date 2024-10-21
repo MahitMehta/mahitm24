@@ -10,7 +10,7 @@ Here you can find various behind-the-scenes details about this website:
 
 ## Inspiration
 
-Many of the ideas, including the document-styled format of the website, were inspired by one of personal favorite open-source developers: Val Packett. Check out their personal website at [val.packett.cool](https://val.packett.cool/)!
+Many of the ideas, including the document-styled format of the website, were inspired by one of my personal favorite open-source developers: Val Packett. Check out their personal website at [val.packett.cool](https://val.packett.cool/)!
 
 ## SVGs
 
@@ -24,7 +24,7 @@ The icons are a combination of [FontAwesome's](https://fontawesome.com/) free co
 
 ## Typefaces
 
-This website is entirely set in a new font, including the billboard SVG, I've been testing out: [Jersey 15](https://fonts.google.com/specimen/Jersey+15).
+This website is set in a new font I've been testing, including the billboard SVG: [Jersey 15](https://fonts.google.com/specimen/Jersey+15).
 
 ## Hosting
 
@@ -37,7 +37,7 @@ This website is best viewed on a desktop version of `Google Chrome`, however, an
 # Run Project
 
 1. Clone this repository
-2. Ensure `node` (verison >= 18.17) and `npm` are installed
+2. Ensure `node` (version >= 18.17) and `npm` are installed
 3. Install dependencies: `npm install`
 4. Run local development server: `npm run dev`
 
