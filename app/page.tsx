@@ -1,5 +1,3 @@
-"use client";
-
 import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ContactCard from "@/components/Card/Contact";
@@ -9,6 +7,7 @@ import Footer from "@/components/Footer";
 import GoArrow from "@/components/GoArrow";
 import HighlightPopUp from "@/components/Popup";
 import Sky from "@/components/Sky";
+import WindowRow from "@/components/WindowRow";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
 	faEnvelope,
@@ -19,9 +18,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import PosterWindowSVG from "@/public/svg/poster_window.svg";
-import BasicWindowSVG from "@/public/svg/window.svg";
-import StickerWindow from "@/public/svg/sticker_window.svg";
 
 export default function Home() {
 	return (
@@ -65,15 +61,7 @@ export default function Home() {
 						desktop application, a mesh VPN, and other cool stuff!
 					</p>
 				</Card>
-				<div className="flex justify-around mt-8 gap-6">
-					<PosterWindowSVG width="175" height="300" />
-					<BasicWindowSVG
-						className="window-disappear-one"
-						width="175"
-						height="300"
-					/>
-					<StickerWindow width="175" height="300" />
-				</div>
+				<WindowRow />
 				<section className="mt-6">
 					<h1 className="text-2xl">Projects</h1>
 					<div className="grid gap-3 md:grid-cols-2">

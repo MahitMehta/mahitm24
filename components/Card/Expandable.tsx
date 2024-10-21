@@ -1,9 +1,7 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Card from ".";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import clsx from "clsx";
 import type { MouseEvent, ReactNode } from "react";
@@ -33,10 +31,9 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
 				tabIndex={0}
 			>
 				<Card className="flex justify-between items-center">
-					<FontAwesomeIcon
+					<ChevronRightIcon
 						className={clsx(expanded && "rotate-90", "transition-transform")}
-						size="xs"
-						icon={faChevronRight}
+						width={18}
 					/>
 					<span className="cursor-pointer highlighted">{label}</span>
 					{rightIcon ? (

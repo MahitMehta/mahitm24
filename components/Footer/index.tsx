@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Card from "../Card";
-// import NotByAiLogo from "@/public/svg/notbyai.svg";
 import MahitMLogo from "@/public/svg/logo.svg";
 import {
 	faGithub,
