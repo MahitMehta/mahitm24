@@ -68,7 +68,7 @@ const Footer = () => {
 					<a
 						target="_blank"
 						rel="noopener noreferrer"
-						href="https://github.com/MahitMehta/mahitm24"
+						href="https://github.com/MahitMehta/mahitm24?tab=readme-ov-file#colophon"
 					>
 						<span className="highlighted">colophon</span>
 					</a>

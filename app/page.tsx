@@ -17,10 +17,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import {
-	ArrowDownCircleIcon,
-	LockClosedIcon,
-} from "@heroicons/react/24/outline";
 
 export default function Home() {
 	return (
