@@ -7,7 +7,7 @@ export default function SVCSearch() {
 			id="search"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
 		>
-			<Sky seasons />
+			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard svc />
 			<section className="z-10 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">

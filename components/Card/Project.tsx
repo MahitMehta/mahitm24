@@ -45,6 +45,8 @@ const getTagColor = (tag: EProjectTag) => {
 			return "#027DFD";
 		case EProjectTag.Python:
 			return "#306998";
+		case EProjectTag.FEC:
+			return "#007852";
 		default:
 			return "#ffffff";
 	}
@@ -58,11 +60,12 @@ const ProjectTag: React.FC<ProjectTagProps> = ({ value }) => {
 	return (
 		<span
 			style={{
+				fontWeight: 500,
 				color: getTagColor(value),
-				letterSpacing: "0.75px",
+				border: "1px solid rgba(255, 255, 255, 0.15)",
 			}}
 			className={
-				"px-2 inline-block border-solid border-[1px] text-white rounded-sm text-[14px] font-bold"
+				"px-2 inline-block border-solid border-[2px] text-white rounded-sm text-[14px] font-bold"
 			}
 		>
 			{value}
