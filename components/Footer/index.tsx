@@ -30,10 +30,10 @@ const LinkIcon: React.FC<LinkIconProps> = ({ href, icon }) => {
 
 const Footer = () => {
 	return (
-		<Card className="py-3 md:py-1 mt-auto">
+		<Card className="py-3 md:py-1 mt-auto w-full">
 			<footer className="min-h-8 flex sm:flex-row flex-col-reverse items-center gap-2 sm:justify-between">
 				<div className="flex h-full items-center">
-					<Link href="#home" className="w-full h-full">
+					<Link href="/#home" className="w-full h-full">
 						<div className="flex w-8 h-8">
 							<MahitMLogo />
 						</div>
