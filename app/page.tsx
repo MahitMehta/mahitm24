@@ -2,10 +2,11 @@ import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ContactCard from "@/components/Card/Contact";
 import ExpandableCard from "@/components/Card/Expandable";
-import ProjectCard, { EProjectTag } from "@/components/Card/Project";
+import ProjectCard from "@/components/Card/Project";
 import Footer from "@/components/Footer";
 import GoArrow from "@/components/GoArrow";
 import HighlightPopUp from "@/components/Popup";
+import { ESkillTag } from "@/components/SkillTag";
 import Sky from "@/components/Sky";
 import WindowRow from "@/components/WindowRow";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
@@ -51,15 +52,26 @@ export default function Home() {
 					</span>
 				</Card>
 				<Card className="mt-6">
-					<p className="text-base">
+					<span className="text-base">
 						Over the years, I’ve accumulated experience in the various aspects
 						of software development. I began my journey working with web
 						technologies such as React, node.js HTTP servers, and No-SQL
 						databases. Later, I transitioned to building mobile applications in
 						Flutter and React Native. Recently, I’ve been working with ⚙{" "}
-						<span style={{ color: "#AA2704" }}>Rust</span> to develop a remote
-						desktop application, a mesh VPN, and other cool stuff!
-					</p>
+						<HighlightPopUp
+							highlight={
+								<span className="highlighted" style={{ color: "#AA2704" }}>
+									Rust
+								</span>
+							}
+						>
+							<span className="whitespace-nowrap">
+								Favorite Programming Language.
+							</span>
+						</HighlightPopUp>{" "}
+						to develop a remote desktop application, a mesh VPN, and other cool
+						stuff!
+					</span>
 				</Card>
 				<WindowRow />
 				<section className="mt-6">
@@ -69,10 +81,10 @@ export default function Home() {
 							title="Mrial"
 							isMahitMSVC
 							tags={[
-								EProjectTag.Rust,
-								EProjectTag.Linux,
-								EProjectTag.TLS,
-								EProjectTag.FEC,
+								ESkillTag.Rust,
+								ESkillTag.Linux,
+								ESkillTag.TLS,
+								ESkillTag.FEC,
 							]}
 							projectURL="https://github.com/MahitMehta/mrial?tab=readme-ov-file#description"
 							description="A remote desktop application with a server optimized for ARM-based linux and player optimized for ARM64 MacOS."
@@ -81,10 +93,10 @@ export default function Home() {
 							title="MahitM VPN"
 							isMahitMSVC
 							tags={[
-								EProjectTag.Rust,
-								EProjectTag.Linux,
-								EProjectTag.Docker,
-								EProjectTag.WireGuard,
+								ESkillTag.Rust,
+								ESkillTag.Linux,
+								ESkillTag.Docker,
+								ESkillTag.WireGuard,
 							]}
 							projectURL="https://github.com/MahitMehta/mahitm_vpn_node?tab=readme-ov-file#mahitm-vpn-node"
 							description="A complete VPN service with deployable dockerized WireGuard nodes, control plane (for managing nodes), and a Flutter mobile app as a client."
@@ -92,10 +104,10 @@ export default function Home() {
 						<ProjectCard
 							title="C4T-Web"
 							tags={[
-								EProjectTag.React,
-								EProjectTag.NodeJS,
-								EProjectTag.Redis,
-								EProjectTag.NextJS,
+								ESkillTag.React,
+								ESkillTag.NodeJS,
+								ESkillTag.Redis,
+								ESkillTag.NextJS,
 							]}
 							projectURL="https://github.com/code4tomorrow/c4t-web"
 							description="A web application for Code4Tomorrow, a non-profit organization that teaches computer science to underprivileged students."
@@ -103,9 +115,10 @@ export default function Home() {
 						<ProjectCard
 							title="Genesus"
 							tags={[
-								EProjectTag.ReactNative,
-								EProjectTag.Python,
-								EProjectTag.Redis,
+								ESkillTag.ReactNative,
+								ESkillTag.Python,
+								ESkillTag.Redis,
+								ESkillTag.Archived,
 							]}
 							projectURL="https://github.com/gradebook-app"
 							description="A mobile gradebook application for schools who used Genesis parent portal. Over 3,000 students have used this app over it's lifetime."

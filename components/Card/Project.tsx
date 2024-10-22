@@ -1,82 +1,12 @@
 import Card from ".";
 import GoArrow from "../GoArrow";
-
-export enum EProjectTag {
-	React = "React",
-	NodeJS = "Node.js",
-	NextJS = "Next.js",
-	Redis = "Redis",
-	Rust = "Rust",
-	Docker = "Docker",
-	ReactNative = "React Native",
-	WireGuard = "WireGuard",
-	Linux = "Linux",
-	TLS = "TLS",
-	UDP = "UDP",
-	FEC = "FEC",
-	Flutter = "Flutter",
-	CMS = "CMS",
-	Python = "Python",
-}
-
-const getTagColor = (tag: EProjectTag) => {
-	switch (tag) {
-		case EProjectTag.React:
-			return "#61dbfb";
-		case EProjectTag.NodeJS:
-			return "#43853d";
-		case EProjectTag.NextJS:
-			return "#ffffff";
-		case EProjectTag.Redis:
-			return "#A41E11";
-		case EProjectTag.Rust:
-			return "#AA2704";
-		case EProjectTag.Docker:
-			return "#0db7ed";
-		case EProjectTag.ReactNative:
-			return "#61dbfb";
-		case EProjectTag.WireGuard:
-			return "#88171a";
-		case EProjectTag.Linux:
-			return "#9d853c";
-		case EProjectTag.TLS:
-			return "#cc58d6";
-		case EProjectTag.Flutter:
-			return "#027DFD";
-		case EProjectTag.Python:
-			return "#306998";
-		case EProjectTag.FEC:
-			return "#007852";
-		default:
-			return "#ffffff";
-	}
-};
-
-interface ProjectTagProps {
-	value: EProjectTag;
-}
-
-const ProjectTag: React.FC<ProjectTagProps> = ({ value }) => {
-	return (
-		<span
-			style={{
-				fontWeight: 500,
-				color: getTagColor(value),
-				border: "1px solid rgba(255, 255, 255, 0.15)",
-			}}
-			className={
-				"px-2 inline-block border-solid border-[2px] text-white rounded-sm text-[14px] font-bold"
-			}
-		>
-			{value}
-		</span>
-	);
-};
+import SkillTag, { type ESkillTag } from "../SkillTag";
 
 interface ProjectCardProps {
 	title: string;
 	description: string;
-	tags?: EProjectTag[];
+	linkLabel?: string;
+	tags?: ESkillTag[];
 	projectURL?: string;
 	isMahitMSVC?: boolean;
 }
@@ -84,6 +14,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({
 	title,
 	description,
+	linkLabel = "Learn More",
 	tags = [],
 	projectURL,
 	isMahitMSVC = false,
@@ -96,14 +27,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 					<sup className="ml-1 text-white text-[14px]">MahitM-SVC</sup>
 				)}
 			</h1>
-			<p>
+			<p className="font-normal">
 				{description}
 				{projectURL && (
 					<>
 						{" "}
 						<a target="_blank" rel="noopener noreferrer" href={projectURL}>
 							<span className="go-arrow-container inline-flex items-center highlighted text-brand-yellow">
-								<span>Learn More</span>
+								<span>{linkLabel}</span>
 								<GoArrow className="ml-1 text-brand-yellow" />
 							</span>
 						</a>
@@ -113,7 +44,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 			{tags.length > 0 && (
 				<div className="flex my-2 gap-3">
 					{tags.map((tag) => (
-						<ProjectTag key={tag} value={tag} />
+						<SkillTag key={tag} value={tag} />
 					))}
 				</div>
 			)}
