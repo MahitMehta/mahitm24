@@ -17,8 +17,8 @@
 </mask>
 <g mask="url(#mask0_92_44)">
 <rect x="14" y="4" width="94" height="156" fill="#0E1417"/>
-<rect x="36.7616" y="166.348" width="118.596" height="10.8024" transform="rotate(-51.3341 36.7616 166.348)" fill="#203A47"/>
-<rect x="21.7896" y="164.648" width="142.736" height="5.68172" transform="rotate(-51.3341 21.7896 164.648)" fill="#203A47"/>
+<rect opacity="0.5" x="36.7616" y="166.348" width="118.596" height="10.8024" transform="rotate(-51.3341 36.7616 166.348)" fill="#203A47"/>
+<rect opacity="0.5" x="21.7896" y="164.648" width="142.736" height="5.68172" transform="rotate(-51.3341 21.7896 164.648)" fill="#203A47"/>
 <rect x="58.9999" y="3.99994" width="5" height="156" fill="#121D23"/>
 <rect x="58.9999" y="3.99994" width="5" height="156" fill="#121D23"/>
 <rect x="58.9999" y="3.99994" width="5" height="156" fill="#121D23"/>
