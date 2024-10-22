@@ -9,8 +9,8 @@ export default function SVCSearch() {
 		>
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
-			<Billboard svc />
-			<section className="z-10 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
+			<Billboard svc className="billboard-flicker" />
+			<section className="building-flicker z-10 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<h1 className="text-xl">Coming Soon</h1>
 			</section>
 		</div>
