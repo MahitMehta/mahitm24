@@ -1,6 +1,7 @@
 import Billboard from "@/components/Billboard";
 import Footer from "@/components/Footer";
 import Sky from "@/components/Sky";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function SVCSearch() {
 	return (
@@ -12,7 +13,7 @@ export default function SVCSearch() {
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard svc className="billboard-flicker" />
 			<section className="building-flicker z-50 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
-				<div className="w-full border-4 bg-brand-blue-darker border-brand-blue-accent">
+				<div className="w-full relative border-4 bg-brand-blue-darker border-brand-blue-accent">
 					<input
 						className="bg-transparent outline-none px-2 w-full"
 						type="text"
@@ -21,8 +22,12 @@ export default function SVCSearch() {
 						autoComplete="off"
 						placeholder="Search SVC..."
 					/>
+					<span className="absolute right-2 top-1/2 -translate-y-1/2 opacity-75 hover:opacity-50 transition-all cursor-pointer">
+						<MagnifyingGlassIcon width={16} />
+					</span>
 				</div>
-				<div className="p-4" />
+				<span className="opacity-50 font-thin">(Coming Soon)</span>
+				<div className="p-2" />
 				<Footer />
 			</section>
 		</div>

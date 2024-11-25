@@ -20,7 +20,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 					className,
 				)}
 			>
-				{svc && (
+				{/* {svc && (
 					<div className="absolute left-[21%]  md:left-[33.5%] top-0">
 						<Lottie
 							options={{
@@ -32,7 +32,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 							width={200}
 						/>
 					</div>
-				)}
+				)} */}
 				{svc ? <SVCBillboardSVG /> : <BillboardSVG />}
 			</div>
 		</div>
