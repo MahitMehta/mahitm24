@@ -5,6 +5,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 const STAR_COUNT = 75;
 const MAX_DROPLETS = 100;
+const MAX_SNOWFLAKES = 100;
 
 class Star {
 	private x: number;
@@ -60,10 +61,38 @@ class Star {
 	}
 }
 
+class Snowflake {
+	private x: number;
+	private y: number;
+	private size: number;
+	private speed: number;
+
+	constructor(x: number, y: number) {
+		this.x = x;
+		this.y = y;
+		this.size = Math.floor(1 + Math.random() * 3);
+		this.speed = Math.floor(1 + Math.random() * 2);
+	}
+
+	update(ctx: CanvasRenderingContext2D) {
+		this.y += this.speed;
+		this.draw(ctx);
+
+		if (this.y >= window.innerHeight) {
+			this.y = -this.size;
+		}
+	}
+
+	draw(ctx: CanvasRenderingContext2D) {
+		ctx.fillStyle = "white";
+		ctx.fillRect(this.x, this.y, this.size, this.size);
+	}
+}
+
 class Droplet {
-	private static MAX_SPEED = 20;
-	private static MIN_SPEED = 15;
-	private static MAX_HEIGHT = 10 * (Droplet.MAX_SPEED - Droplet.MIN_SPEED);
+	private static MAX_SPEED = 15;
+	private static MIN_SPEED = 5;
+	private static MAX_HEIGHT = 5 * (Droplet.MAX_SPEED - Droplet.MIN_SPEED);
 
 	private x: number;
 	private y: number;
@@ -74,11 +103,11 @@ class Droplet {
 	constructor(x: number, y: number) {
 		this.x = x;
 		this.y = y;
-		this.width = 2;
+		this.width = Math.floor(1 + Math.random() * 2);
 		this.speed =
 			Math.floor(Math.random() * (Droplet.MAX_SPEED - Droplet.MIN_SPEED + 1)) +
 			Droplet.MIN_SPEED;
-		this.height = 10 * (Droplet.MAX_SPEED - this.speed);
+		this.height = 5 * (Droplet.MAX_SPEED - this.speed);
 	}
 
 	update(ctx: CanvasRenderingContext2D) {
@@ -117,6 +146,7 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 
 	const stars = useRef<Star[]>([]);
 	const droplets = useRef<Droplet[]>([]);
+	const snowflakes = useRef<Snowflake[]>([]);
 
 	const render = useCallback(
 		(
@@ -140,6 +170,10 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 			for (const droplet of droplets.current) {
 				droplet.update(precipCtx);
 			}
+
+			for (const snowflake of snowflakes.current) {
+				snowflake.update(precipCtx);
+			}
 		},
 		[seasons],
 	);
@@ -147,6 +181,7 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 	const resetElements = useCallback(() => {
 		stars.current = [];
 		droplets.current = [];
+		snowflakes.current = [];
 	}, []);
 
 	const populateCanvasElements = useCallback(
@@ -177,10 +212,16 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 			}
 
 			if (seasons) {
-				for (let i = 0; i < MAX_DROPLETS; i++) {
+				// for (let i = 0; i < MAX_DROPLETS; i++) {
+				// 	const x = Math.random() * width;
+				// 	const y = Math.random() * height;
+				// 	droplets.current.push(new Droplet(x, y));
+				// }
+
+				for (let i = 0; i < MAX_SNOWFLAKES; i++) {
 					const x = Math.random() * width;
 					const y = Math.random() * height;
-					droplets.current.push(new Droplet(x, y));
+					snowflakes.current.push(new Snowflake(x, y));
 				}
 			}
 
