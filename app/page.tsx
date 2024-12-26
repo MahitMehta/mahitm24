@@ -28,7 +28,7 @@ export default function Home() {
 		>
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
-			<Billboard className="building-flicker" />
+			<Billboard className="mt-[5vh] sm:mt-[25vh]" />
 			<section className="building-flicker z-50 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<h1 className="text-2xl">Welcome,</h1>
 				<Card>
