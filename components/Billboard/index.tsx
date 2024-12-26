@@ -1,12 +1,10 @@
 "use client";
 
-import BillboardSVG from "@/public/svg/billboard.svg";
-import SVCBillboardSVG from "@/public/svg/svc-billboard.svg";
-import Lottie from "react-lottie";
+import { useEffect } from "react";
 import clsx from "clsx";
 
-import SpiderJSON from "@/public/lottie/spider.json";
-import FireworksJSON from "@/public/lottie/fireworks.json";
+import BillboardSVG from "@/public/svg/billboard.svg";
+import SVCBillboardSVG from "@/public/svg/svc-billboard.svg";
 
 interface BillboardProps {
 	svc?: boolean;
@@ -14,6 +12,10 @@ interface BillboardProps {
 }
 
 const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
+	useEffect(() => {
+		import("@lottiefiles/lottie-player");
+	}, []);
+
 	return (
 		<div
 			className={clsx(
@@ -26,37 +28,24 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker"
 				}
 			>
-				{/* {svc && (
-					<div className="absolute left-[21%]  md:left-[33.5%] top-0">
-						<Lottie
-							options={{
-								loop: false,
-								autoplay: true,
-								animationData: SpiderJSON,
-							}}
-							height={200}
-							width={200}
-						/>
-					</div>
-				)} */}
 				{svc ? <SVCBillboardSVG /> : <BillboardSVG />}
 				{svc && (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">
-						<Lottie
+						<lottie-player
+							autoplay
+							loop
+							style={{ height: "100%", width: "100%" }}
 							speed={0.5}
-							options={{
-								loop: true,
-								autoplay: false,
-								animationData: FireworksJSON,
-							}}
+							mode="normal"
+							src="/lottie/fireworks.json"
 						/>
-						<Lottie
+						<lottie-player
+							autoplay
+							loop
+							style={{ height: "100%", width: "100%" }}
 							speed={0.75}
-							options={{
-								loop: true,
-								autoplay: false,
-								animationData: FireworksJSON,
-							}}
+							mode="normal"
+							src="/lottie/fireworks.json"
 						/>
 					</div>
 				)}
