@@ -46,7 +46,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 							speed={0.5}
 							options={{
 								loop: true,
-								autoplay: true,
+								autoplay: false,
 								animationData: FireworksJSON,
 							}}
 						/>
@@ -54,7 +54,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 							speed={0.75}
 							options={{
 								loop: true,
-								autoplay: true,
+								autoplay: false,
 								animationData: FireworksJSON,
 							}}
 						/>
