@@ -4,7 +4,6 @@ export enum EBillboardMode {
 }
 
 export interface IServiceConfig {
-	date: Date;
 	fireworksEnabled: boolean;
 	newYearCountdownEnabled: boolean;
 	snowEnabled: boolean;

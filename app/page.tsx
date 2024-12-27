@@ -26,7 +26,7 @@ import Link from "next/link";
 export const revalidate = 60;
 
 export default function Home() {
-	const { newYearCountdownEnabled, date } = getServiceConfig();
+	const { newYearCountdownEnabled } = getServiceConfig();
 
 	return (
 		<div
@@ -35,9 +35,7 @@ export default function Home() {
 		>
 			<Link href="/svc" className="z-50 absolute top-4">
 				<div className="bg-brand-brown border-4 border-brand-brown-darker pl-2 flex items-center go-arrow-container cursor-pointer justify-center gap-2">
-					<span className="text-brand-yellow">
-						New Year Countdown {date.toISOString()}
-					</span>
+					<span className="text-brand-yellow">New Year Countdown</span>
 					<GoArrow className="text-brand-yellow" />
 				</div>
 			</Link>
