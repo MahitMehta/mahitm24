@@ -35,6 +35,10 @@ body {
 	transform: translateY(17px);
 }
 
+.platform {
+	transform: translateY(17px);
+}
+
 .billboard-flicker {
 	filter: brightness(0.5);
 	animation: flicker 0.2s 2 forwards;
@@ -102,6 +106,10 @@ body {
 	.billboard {
 		transform: translateY(6%);
 	}
+
+	.platform {
+		transform: translateY(24%);
+	}
 }
 
 @keyframes slide-a {
@@ -143,6 +151,32 @@ body {
 	stroke-dashoffset: 0;
 }
 
+.indian-gradient {
+	background-image: linear-gradient(
+		180deg,
+		rgb(233, 170, 75) 33.33% /* End of red */,
+		rgb(227, 225, 225) 33.33% /* Start of green */,
+		rgb(227, 225, 225) 66.66% /* End of green */,
+		rgb(62, 132, 62) 66.66% /* Start of blue */
+	);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
+.fade-in {
+	animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
 .split-flap-flip {
 	animation: split-flap-flip-animation 0.75s ease;
 	transform-origin: bottom;
@@ -150,9 +184,9 @@ body {
 
 @keyframes split-flap-flip-animation {
 	0% {
-		transform: rotateX(0deg);
+		transform: rotateX(0deg) translate3d(0, 0, 0);
 	}
 	100% {
-		transform: rotateX(180deg);
+		transform: rotateX(180deg) translate3d(0, 0, 0);
 	}
 }

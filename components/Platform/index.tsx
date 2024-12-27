@@ -15,7 +15,7 @@ const Platform: React.FC<PlatformProps> = ({ className }) => {
 				className,
 			)}
 		>
-			<div className={"left-0 absolute bottom-0 w-[calc(109%)] billboard"}>
+			<div className={"left-0 absolute bottom-0 w-[calc(109%)] platform"}>
 				<PlatformSVG />
 			</div>
 		</div>

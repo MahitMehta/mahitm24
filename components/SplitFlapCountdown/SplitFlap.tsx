@@ -4,14 +4,14 @@ interface ISplitFlapProps {
 	value: number;
 	fontSize: number;
 	width: number;
-	gap?: number;
+	gap: number;
 }
 
 const SplitFlap: React.FC<ISplitFlapProps> = ({
 	value,
 	fontSize,
 	width,
-	gap = 2,
+	gap,
 }) => {
 	const [prevValue, setPrevValue] = useState<number>(0);
 	const [currentValue, setCurrentValue] = useState<number>(0);
@@ -36,7 +36,13 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 	const size = useMemo(() => fontSize + gap, [fontSize, gap]);
 
 	return (
-		<div style={{ height: size, width }} className="relative overflow-hidden">
+		<div
+			style={{
+				height: size,
+				width,
+			}}
+			className="relative overflow-hidden"
+		>
 			<div style={{ height: halfHeight }} className="absolute bottom-0">
 				<span
 					style={{ height: halfHeightGap }}
@@ -52,7 +58,10 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 			</div>
 			<div style={{ height: halfHeight }} className="absolute">
 				<span
-					style={{ lineHeight: 1, fontSize }}
+					style={{
+						lineHeight: 1,
+						fontSize,
+					}}
 					className="h-[0.5em] overflow-hidden bg-black inline-block"
 				>
 					{currentValue}
@@ -61,6 +70,7 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 			<div
 				style={{
 					transformStyle: "preserve-3d",
+					willChange: "transform",
 					height: halfHeight,
 				}}
 				className="absolute bg-black w-full"

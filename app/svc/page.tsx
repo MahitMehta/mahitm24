@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import Platform from "@/components/Platform";
 import Sky from "@/components/Sky";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
+import Timeline from "@/components/Timeline";
 
 export default function SVCSearch() {
 	return (
@@ -29,9 +29,9 @@ export default function SVCSearch() {
 					</span>
 				</div>
 			</section>
-
-			<Platform className="billboard-flicker mt-auto" />
-			<section className="building-flicker z-50 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
+			<Timeline />
+			<section className="building-flicker z-40 flex items-center mt-auto flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
+				<Platform className="top-0 -translate-y-full billboard-flicker !absolute" />
 				<Footer />
 			</section>
 		</div>
