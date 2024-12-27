@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 
 import BillboardSVG from "@/public/svg/billboard.svg";
-import SVCBillboardSVG from "@/public/svg/svc-billboard.svg";
+import SVCBillboardSVG from "@/public/svg/holiday-billboard.svg";
+import SplitFlapCountdown from "@/components/SplitFlapCountdown";
 
 interface BillboardProps {
 	svc?: boolean;
@@ -14,6 +15,13 @@ interface BillboardProps {
 const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 	useEffect(() => {
 		import("@lottiefiles/lottie-player");
+	}, []);
+
+	const newYearDate = useMemo(() => {
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		const newYear = new Date(currentYear + 1, 0, 1);
+		return newYear.getTime();
 	}, []);
 
 	return (
@@ -28,6 +36,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker"
 				}
 			>
+				{svc && <SplitFlapCountdown futureDate={newYearDate} />}
 				{svc ? <SVCBillboardSVG /> : <BillboardSVG />}
 				{svc && (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">
