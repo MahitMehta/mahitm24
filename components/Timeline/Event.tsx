@@ -18,7 +18,7 @@ const Event = () => {
 				<lottie-player
 					autoplay
 					loop
-					style={{ height: "50px", width: "50px", transform: "scale(4)" }}
+					style={{ height: "50px", width: "50px" }}
 					speed={1}
 					mode="normal"
 					src="/lottie/propeller.json"
@@ -26,14 +26,14 @@ const Event = () => {
 			</div>
 			<div
 				style={{
-					transform: "translate(100%, -65%)",
+					transform: "translate(110%, -65%)",
 				}}
 				className="absolute right-0 top-0"
 			>
 				<lottie-player
 					autoplay
 					loop
-					style={{ height: "50px", width: "50px", transform: "scale(4)" }}
+					style={{ height: "50px", width: "50px" }}
 					speed={1}
 					mode="normal"
 					src="/lottie/propeller.json"
