@@ -9,6 +9,7 @@ import HighlightPopUp from "@/components/Popup";
 import { ESkillTag } from "@/components/SkillTag";
 import Sky from "@/components/Sky";
 import WindowRow from "@/components/WindowRow";
+import { getServiceConfig } from "@/helpers/serviceConfig";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
 	faEnvelope,
@@ -25,6 +26,8 @@ import Link from "next/link";
 export const revalidate = 60;
 
 export default function Home() {
+	const { newYearCountdownEnabled, date } = getServiceConfig();
+
 	return (
 		<div
 			id="home"
@@ -32,7 +35,9 @@ export default function Home() {
 		>
 			<Link href="/svc" className="z-50 absolute top-4">
 				<div className="bg-brand-brown border-4 border-brand-brown-darker pl-2 flex items-center go-arrow-container cursor-pointer justify-center gap-2">
-					<span className="text-brand-yellow">New Year Countdown</span>
+					<span className="text-brand-yellow">
+						New Year Countdown {date.toISOString()}
+					</span>
 					<GoArrow className="text-brand-yellow" />
 				</div>
 			</Link>

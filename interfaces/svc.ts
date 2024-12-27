@@ -1,9 +1,10 @@
-enum EBillboardMode {
+export enum EBillboardMode {
 	DEFAULT = 0,
 	NEW_YEAR = 1,
 }
 
-interface ServiceConfig {
+export interface IServiceConfig {
+	date: Date;
 	fireworksEnabled: boolean;
 	newYearCountdownEnabled: boolean;
 	snowEnabled: boolean;
