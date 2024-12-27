@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Jersey_15 } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -48,7 +50,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${Jersey15.className} antialiased`}>{children}</body>
+			<body className={`${Jersey15.className} antialiased`}>
+				{children}
+				<SpeedInsights />
+			</body>
 		</html>
 	);
 }
