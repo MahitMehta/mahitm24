@@ -20,6 +20,8 @@ const config: Config = {
 				"brand-blue-accent": "#121D23",
 				"brand-blue-darker": "#0E1417",
 				"brand-yellow": "#FFE99F",
+				"brand-brown": "#2B1E1D",
+				"brand-brown-darker": "#1C1413",
 			},
 		},
 	},

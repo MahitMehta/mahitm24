@@ -24,6 +24,7 @@ const NewYearCountdown = () => {
 			gap={isMobile ? 2 : 4}
 			width={isMobile ? 30 : 40}
 			futureDate={newYearDate}
+			label="New Year Countdown"
 			completedMessage={
 				<span
 					className="text-center fade-in indian-gradient"

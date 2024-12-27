@@ -31,7 +31,7 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 		>
 			<div
 				className={
-					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker"
+					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
 				{svc && <NewYearCountdown />}

@@ -26,6 +26,12 @@ export default function Home() {
 			id="home"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
 		>
+			<Link href="/svc" className="z-50 absolute top-4">
+				<div className="bg-brand-brown border-4 border-brand-brown-darker pl-2 flex items-center go-arrow-container cursor-pointer justify-center gap-2">
+					<span className="text-brand-yellow">New Year Countdown</span>
+					<GoArrow className="text-brand-yellow" />
+				</div>
+			</Link>
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard className="mt-[5vh] sm:mt-[25vh]" />

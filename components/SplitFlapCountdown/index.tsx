@@ -9,6 +9,7 @@ interface ISplitFlapCountdownProps {
 	fontSize?: number;
 	gap?: number;
 	width?: number;
+	label?: string;
 }
 
 const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
@@ -17,6 +18,7 @@ const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
 	fontSize = 100,
 	gap = 4,
 	width = 40,
+	label = "",
 }) => {
 	return (
 		<Countdown
@@ -36,7 +38,7 @@ const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
 				}
 
 				return (
-					<div className="flex justify-center space-x-4 fade-in">
+					<div className="flex justify-center space-x-4 fade-in relative w-min">
 						<SplitFlapGroup
 							digits={dayDigits}
 							label="Days"
@@ -65,6 +67,11 @@ const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
 							gap={gap}
 							width={width}
 						/>
+						{!!label && (
+							<span className="absolute block right-0 -top-2 text-brand-yellow">
+								{label}
+							</span>
+						)}
 					</div>
 				);
 			}}
