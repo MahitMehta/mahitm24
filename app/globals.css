@@ -190,3 +190,11 @@ body {
 		transform: rotateX(180deg) translate3d(0, 0, 0);
 	}
 }
+
+.fly-out-left {
+	transform: translateX(-100vw);
+}
+
+.fly-in {
+	transform: translateX(0);
+}

@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import clsx from "clsx";
 
 import BillboardSVG from "@/public/svg/billboard.svg";
-import SVCBillboardSVG from "@/public/svg/holiday-billboard.svg";
+import NewYearBillboardSVG from "@/public/svg/holiday-billboard.svg";
 import dynamic from "next/dynamic";
+import { EBillboardMode, type IServiceConfig } from "@/interfaces/svc";
 
 const NewYearCountdown = dynamic(
 	() => import("@/components/Seasons/Winter/NewYearCountdown"),
@@ -13,17 +14,28 @@ const NewYearCountdown = dynamic(
 );
 
 interface BillboardProps {
+	serviceConfig: IServiceConfig;
 	svc?: boolean;
 	className?: string;
+	style?: React.CSSProperties;
 }
 
-const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
+const Billboard: React.FC<BillboardProps> = ({
+	serviceConfig,
+	svc = false,
+	className,
+	style = {},
+}) => {
+	const { newYearCountdownEnabled, fireworksEnabled, billboardMode } =
+		serviceConfig;
+
 	useEffect(() => {
 		import("@lottiefiles/lottie-player");
 	}, []);
 
 	return (
 		<div
+			style={style}
 			className={clsx(
 				"z-50 w-full overflow-visible max-w-screen-md h-[300px] relative",
 				className,
@@ -34,9 +46,18 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
-				{svc && <NewYearCountdown />}
-				{svc ? <SVCBillboardSVG /> : <BillboardSVG />}
-				{svc && (
+				{svc && newYearCountdownEnabled ? <NewYearCountdown /> : <></>}
+				{svc ? (
+					<>
+						{billboardMode === EBillboardMode.DEFAULT && <BillboardSVG />}
+						{billboardMode === EBillboardMode.NEW_YEAR && (
+							<NewYearBillboardSVG />
+						)}
+					</>
+				) : (
+					<BillboardSVG />
+				)}
+				{svc && fireworksEnabled ? (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">
 						<lottie-player
 							autoplay
@@ -55,6 +76,8 @@ const Billboard: React.FC<BillboardProps> = ({ svc = false, className }) => {
 							src="/lottie/fireworks.json"
 						/>
 					</div>
+				) : (
+					<></>
 				)}
 			</div>
 		</div>

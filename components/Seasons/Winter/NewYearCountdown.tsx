@@ -1,19 +1,32 @@
+"use client";
+
 import useMobile from "@/app/hooks/useMobile";
 import SplitFlapCountdown from "@/components/SplitFlapCountdown";
 import React, { useMemo } from "react";
+import { getTimezoneOffset } from "date-fns-tz";
 
 const NewYearCountdown = () => {
 	const newYearDate = useMemo(() => {
-		const now = new Date();
-		const currentYear = now.getFullYear();
-		const newYear = new Date(currentYear + 1, 0, 1);
+		const estTimeZone = "America/New_York";
 
-		// if new year is more than 10 days away, show 0
-		if (newYear.getTime() - now.getTime() > 10 * 24 * 60 * 60 * 1000) {
-			return 0;
+		const now = new Date();
+		const formatter = new Intl.DateTimeFormat([], {
+			timeZone: estTimeZone,
+			year: "numeric",
+		});
+		const easternCurrentYear = Number.parseInt(formatter.format(now));
+
+		const newUTCYear = new Date(Date.UTC(easternCurrentYear + 1, 0, 1));
+
+		const estOffset = getTimezoneOffset(estTimeZone, now);
+
+		// if new year is more than 10 days away, return current time (wish happy new year)
+		const endTimeInMS = 10 * 24 * 60 * 60 * 1000;
+		if (newUTCYear.getTime() - estOffset - now.getTime() > endTimeInMS) {
+			return Date.now();
 		}
 
-		return newYear.getTime();
+		return newUTCYear.getTime() - estOffset;
 	}, []);
 
 	const isMobile = useMobile();
@@ -24,7 +37,7 @@ const NewYearCountdown = () => {
 			gap={isMobile ? 2 : 4}
 			width={isMobile ? 30 : 40}
 			futureDate={newYearDate}
-			label="New Year Countdown"
+			label="EST New Year Countdown"
 			completedMessage={
 				<span
 					className="text-center fade-in indian-gradient"

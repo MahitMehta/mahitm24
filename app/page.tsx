@@ -1,3 +1,4 @@
+import Banner from "@/components/Banner";
 import Billboard from "@/components/Billboard";
 import Card from "@/components/Card";
 import ContactCard from "@/components/Card/Contact";
@@ -22,26 +23,27 @@ import Image from "next/image";
 import Link from "next/link";
 
 // Next.js will invalidate the cache when a
-// request comes in, at most once every 60 seconds.
-export const revalidate = 60;
+// request comes in, at most once every hour.
+export const revalidate = 3600;
 
 export default function Home() {
-	const { newYearCountdownEnabled } = getServiceConfig();
+	const serviceConfig = getServiceConfig();
+	const { newYearCountdownEnabled } = serviceConfig;
 
 	return (
 		<div
 			id="home"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
 		>
-			<Link href="/svc" className="z-50 absolute top-4">
-				<div className="bg-brand-brown border-4 border-brand-brown-darker pl-2 flex items-center go-arrow-container cursor-pointer justify-center gap-2">
-					<span className="text-brand-yellow">New Year Countdown</span>
-					<GoArrow className="text-brand-yellow" />
-				</div>
-			</Link>
+			{newYearCountdownEnabled && (
+				<Banner label="New Year Countdown" href="/svc" />
+			)}
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
-			<Billboard className="mt-[5vh] sm:mt-[25vh]" />
+			<Billboard
+				className="mt-[5vh] sm:mt-[25vh]"
+				serviceConfig={serviceConfig}
+			/>
 			<section className="building-flicker z-50 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<h1 className="text-2xl">Welcome,</h1>
 				<Card>

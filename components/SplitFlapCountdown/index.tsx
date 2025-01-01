@@ -1,7 +1,7 @@
 import Countdown from "react-countdown";
-import SplitFlap from "./SplitFlap";
 import SplitFlapGroup from "./SplitFlapGroup";
 import type { ReactNode } from "react";
+import clsx from "clsx";
 
 interface ISplitFlapCountdownProps {
 	futureDate: number;
@@ -10,6 +10,7 @@ interface ISplitFlapCountdownProps {
 	gap?: number;
 	width?: number;
 	label?: string;
+	className?: string;
 }
 
 const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
@@ -19,9 +20,11 @@ const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
 	gap = 4,
 	width = 40,
 	label = "",
+	className = "",
 }) => {
 	return (
 		<Countdown
+			now={() => Date.now()}
 			date={futureDate}
 			renderer={({ formatted, completed }) => {
 				const secondDigits = formatted.seconds.split("").map(Number);
@@ -38,7 +41,12 @@ const SplitFlapCountdown: React.FC<ISplitFlapCountdownProps> = ({
 				}
 
 				return (
-					<div className="flex justify-center space-x-4 fade-in relative w-min">
+					<div
+						className={clsx(
+							"flex justify-center space-x-4 fade-in relative w-min",
+							className,
+						)}
+					>
 						<SplitFlapGroup
 							digits={dayDigits}
 							label="Days"
