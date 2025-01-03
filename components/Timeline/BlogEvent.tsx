@@ -1,10 +1,10 @@
-import type { IBlogEvent, IEvent } from "@/interfaces/contentful";
+import type { IArticleEvent, IEvent } from "@/interfaces/contentful";
 import Image from "next/image";
 import GoArrow from "../GoArrow";
 import Link from "next/link";
 
 interface BlogEventProps {
-	event: IEvent<IBlogEvent>;
+	event: IEvent<IArticleEvent>;
 }
 
 const BlogEvent: React.FC<BlogEventProps> = ({ event }) => {
@@ -16,7 +16,7 @@ const BlogEvent: React.FC<BlogEventProps> = ({ event }) => {
 			<div className="h-full w-full relative">
 				<Image
 					src={`/cdn/v1/svc/thumbnails/${event.content.thumbnail}`}
-					alt="2024 Thumbnail"
+					alt={"Blog Thumbnail"}
 					layout="fill"
 					objectFit="contain"
 					draggable={false}

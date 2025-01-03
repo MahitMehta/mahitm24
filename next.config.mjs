@@ -7,6 +7,16 @@ const nextConfig = {
 				destination: "/api/resume",
 			},
 			{
+				source: "/cdn/v1/video/t/:transformations/:slug*",
+				destination:
+					"https://res.cloudinary.com/mahitm-cdn/video/upload/:transformations/mahitm/svc/videos/:slug*",
+			},
+			{
+				source: "/cdn/v1/video/:slug*",
+				destination:
+					"https://res.cloudinary.com/mahitm-cdn/video/upload/mahitm/svc/videos/:slug*",
+			},
+			{
 				source: "/cdn/v1/t/:transformations/:slug*",
 				destination:
 					"https://res.cloudinary.com/mahitm-cdn/image/upload/:transformations/mahitm/:slug*",

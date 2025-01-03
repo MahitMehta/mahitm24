@@ -6,19 +6,22 @@ import type { Metadata } from "next";
 import { gql } from "graphql-request";
 import { fetchContentful } from "@/utils/contentful/client";
 import type {
-	IBlogEvent,
+	IVideoEvent,
+	IArticleEvent,
 	IEvent,
 	IEventCollection,
 } from "@/interfaces/contentful";
-import Document from "@/components/Contentful/Document";
+import { EventType } from "@/interfaces/contentful";
 import { getFormattedDate } from "@/utils/common";
 import { redirect } from "next/navigation";
+import BlogArticle from "./BlogArticle";
+import BlogVideo from "./BlogVideo";
 
 export const revalidate = 900;
 
 const blogSlugsQuery = gql`
     query BlogEvents($preview: Boolean!) {
-        eventCollection(where: { type: "Blog" }, preview: $preview) {
+        eventCollection(where: { type_in: ["Article","Video"] }, preview: $preview) {
             items {
 				sys {
 					id
@@ -35,14 +38,20 @@ const blogEventQuery = gql`
 			sys {
 				id
 			}
+			type
 			content {
-				... on Blog {
+				... on Article {
 					title
 						subtitle
 						body {
 							json
 						}
 						thumbnail
+				}
+				... on Video {
+					title
+					id
+					thumbnailOffset
 				}
 			}
 			published
@@ -70,15 +79,19 @@ export async function generateMetadata({
 }: { params: Promise<{ id: string; slug: string }> }): Promise<Metadata> {
 	const id = (await params).id;
 
-	const { event } = await fetchContentful<{ event: IEvent<IBlogEvent> }>(
-		blogEventQuery,
-		{
-			id,
-			preview: process.env.NODE_ENV !== "production",
-		},
-	);
+	const { event } = await fetchContentful<{
+		event: IEvent<IArticleEvent | IVideoEvent>;
+	}>(blogEventQuery, {
+		id,
+		preview: process.env.NODE_ENV !== "production",
+	});
 
-	const thumbnailURL = `/cdn/v1/svc/thumbnails/${event.content.thumbnail}`;
+	let thumbnailURL: string;
+	if (event.type === EventType.Article) {
+		thumbnailURL = `/cdn/v1/svc/thumbnails/${(event.content as IArticleEvent).thumbnail}`;
+	} else {
+		thumbnailURL = `/cdn/v1/video/t/so_${(event.content as IVideoEvent).thumbnailOffset}/${(event.content as IVideoEvent).id}.webp`;
+	}
 
 	return {
 		title: `${event.content.title} | MahitM Blog`,
@@ -97,22 +110,24 @@ export default async function BlogEventPage({
 	const serviceConfig = getServiceConfig();
 
 	const { id } = await params;
-	const { event } = await fetchContentful<{ event: IEvent<IBlogEvent> }>(
-		blogEventQuery,
-		{
-			id,
-			preview: process.env.NODE_ENV !== "production",
-		},
-	);
+	const { event } = await fetchContentful<{
+		event: IEvent<IArticleEvent | IVideoEvent>;
+	}>(blogEventQuery, {
+		id,
+		preview: process.env.NODE_ENV !== "production",
+	});
 
-	if (new Date(event.published) > new Date()) {
+	if (
+		new Date(event.published) > new Date() &&
+		process.env.NODE_ENV === "production"
+	) {
 		// Redirect to the blog page if the event is not published yet
 		// ("blog is locked")
+		// only in production
 		return redirect("/svc");
 	}
 
 	const formattedDate = getFormattedDate(new Date(event.published));
-
 	return (
 		<div
 			id="blog"
@@ -127,7 +142,10 @@ export default async function BlogEventPage({
 				</h1>
 				<span className="opacity-75">Published at {formattedDate}</span>
 				<br />
-				{event.content.body && <Document document={event.content.body.json} />}
+				{event.type === EventType.Article && <BlogArticle event={event} />}
+				{event.type === EventType.Video && (
+					<BlogVideo event={event as IEvent<IVideoEvent>} />
+				)}
 				<br />
 				<Footer />
 			</section>

@@ -15,7 +15,7 @@ const eventsQuery = gql`
 					id
 				}
 				content {
-					... on Blog {
+					... on Article {
 						title
 						subtitle
 						thumbnail
@@ -23,6 +23,7 @@ const eventsQuery = gql`
 					... on Video {
 						title
 						id
+						thumbnailOffset
 					}
 				}
 				slug,

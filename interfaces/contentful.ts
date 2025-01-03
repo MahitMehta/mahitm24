@@ -3,9 +3,10 @@ import type { Document } from "@contentful/rich-text-types";
 export interface IVideoEvent {
 	id: string;
 	title?: string;
+	thumbnailOffset: number;
 }
 
-export interface IBlogEvent {
+export interface IArticleEvent {
 	title?: string;
 	subtitle?: string;
 	thumbnail?: string;
@@ -15,11 +16,11 @@ export interface IBlogEvent {
 }
 
 export enum EventType {
-	Blog = "Blog",
+	Article = "Article",
 	Video = "Video",
 }
 
-export interface IEvent<T = IBlogEvent | IVideoEvent> {
+export interface IEvent<T = IArticleEvent | IVideoEvent> {
 	sys: {
 		id: string;
 	};

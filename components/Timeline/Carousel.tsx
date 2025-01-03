@@ -69,13 +69,11 @@ const Carousel: React.FC<PropType> = ({ options, slides }) => {
 			<div className="embla__viewport h-full" ref={emblaRef}>
 				<div className="embla__container flex h-full">
 					{slides.map((slide) => (
-						<div
+						<Event
 							className="embla__slide pl-14 pr-14 pt-6"
-							dir="ltr"
 							key={slide.slug}
-						>
-							<Event event={slide} />
-						</div>
+							event={slide}
+						/>
 					))}
 					{/* {hasMoreToLoad && (
 						<div
