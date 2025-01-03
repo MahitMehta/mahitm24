@@ -38,7 +38,7 @@ const Billboard: React.FC<BillboardProps> = ({
 		import("@lottiefiles/lottie-player");
 	}, []);
 
-	const Billboard = useMemo(() => {
+	const BillboardSVG = useMemo(() => {
 		if (blog) {
 			return BlogBillboardSVG;
 		}
@@ -69,7 +69,8 @@ const Billboard: React.FC<BillboardProps> = ({
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
-				<Billboard />
+				{svc && newYearCountdownEnabled ? <NewYearCountdown /> : <></>}
+				<BillboardSVG />
 				{svc && fireworksEnabled ? (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">
 						<lottie-player
