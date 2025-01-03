@@ -6,12 +6,15 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Timeline from "@/components/Timeline";
 import { getServiceConfig } from "@/helpers/serviceConfig";
 import { useState } from "react";
+import { getEventsPreview } from "@/utils/contentful/events";
 
 export const revalidate = 3600;
 
-export default function SVCSearch() {
+export default async function SVCSearch() {
 	const serviceConfig = getServiceConfig();
 	const { newYearCountdownEnabled } = serviceConfig;
+
+	const defaultEventsPreview = await getEventsPreview({ limit: 3, skip: 0 });
 
 	return (
 		<div
@@ -42,7 +45,7 @@ export default function SVCSearch() {
 					</span>
 				</div>
 			</section>
-			<Timeline />
+			<Timeline events={defaultEventsPreview} />
 			<section className="building-flicker z-40 flex items-center mt-auto flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<Platform className="top-0 -translate-y-full billboard-flicker !absolute" />
 				<Footer />

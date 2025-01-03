@@ -20,7 +20,7 @@ const Carousel: React.FC<PropType> = ({ options, slides }) => {
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		dragFree: true,
 		slidesToScroll: 1,
-		containScroll: false,
+		// containScroll: false,
 		...options,
 	});
 
@@ -67,10 +67,10 @@ const Carousel: React.FC<PropType> = ({ options, slides }) => {
 	return (
 		<div className="embla h-full max-w-[385px] md:max-w-screen-md" dir="rtl">
 			<div className="embla__viewport h-full" ref={emblaRef}>
-				<div className="embla__container flex h-full">
+				<div className="flex h-full">
 					{slides.map((slide) => (
 						<Event
-							className="embla__slide pl-14 pr-14 pt-6"
+							className="pl-14 pr-14 pt-6"
 							key={slide.slug}
 							event={slide}
 						/>

@@ -12,7 +12,6 @@ import type {
 	IEventCollection,
 } from "@/interfaces/contentful";
 import { EventType } from "@/interfaces/contentful";
-import { getFormattedDate } from "@/utils/common";
 import { redirect } from "next/navigation";
 import BlogArticle from "./BlogArticle";
 import BlogVideo from "./BlogVideo";

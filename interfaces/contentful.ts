@@ -32,6 +32,7 @@ export interface IEvent<T = IArticleEvent | IVideoEvent> {
 
 export interface IEventCollection {
 	eventCollection: {
+		total: number;
 		items: IEvent[];
 	};
 }
