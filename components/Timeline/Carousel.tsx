@@ -9,7 +9,7 @@ import type {
 import useEmblaCarousel from "embla-carousel-react";
 import { usePrevNextButtons } from "./CarouselButtons";
 import Event from "./Event";
-import type { IEvent } from ".";
+import type { IEvent } from "@/interfaces/contentful";
 
 type PropType = {
 	slides: IEvent[];
@@ -72,9 +72,9 @@ const Carousel: React.FC<PropType> = ({ options, slides }) => {
 						<div
 							className="embla__slide pl-14 pr-14 pt-6"
 							dir="ltr"
-							key={slide.sys.id}
+							key={slide.slug}
 						>
-							<Event content={slide} />
+							<Event event={slide} />
 						</div>
 					))}
 					{/* {hasMoreToLoad && (

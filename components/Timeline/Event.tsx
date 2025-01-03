@@ -1,33 +1,32 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import GoArrow from "../GoArrow";
-import Image from "next/image";
-import type { IEvent } from ".";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { EventType, type IEvent } from "@/interfaces/contentful";
+import BlogEvent from "./BlogEvent";
 
 interface IEventProps {
-	content: IEvent;
+	event: IEvent;
 }
 
-const Event: React.FC<IEventProps> = ({ content }) => {
+const Event: React.FC<IEventProps> = ({ event }) => {
 	useEffect(() => {
 		import("@lottiefiles/lottie-player");
 	}, []);
 
 	const locked = useMemo(() => {
-		return new Date(content.published) > new Date();
-	}, [content.published]);
+		return new Date(event.published) > new Date();
+	}, [event.published]);
 
 	const formmatedPublishedDate = useMemo(() => {
-		const date = new Date(content.published);
+		const date = new Date(event.published);
 		const hours = date.getHours();
 		const minutes = date.getMinutes().toString().padStart(2, "0");
 		const ampm = hours >= 12 ? "pm" : "am";
 		const formattedHours = hours % 12 || 12;
 		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${formattedHours}:${minutes} ${ampm}`;
-	}, [content.published]);
+	}, [event.published]);
 
 	return (
 		<div
@@ -77,25 +76,7 @@ const Event: React.FC<IEventProps> = ({ content }) => {
 				/>
 			</div>
 			<div className="w-full h-full px-2 gap-0 flex flex-col py-2 cursor-pointer hover:opacity-75 transition-all duration-300 go-arrow-container">
-				<div className="h-full w-full relative">
-					<Image
-						src={`/cdn/v1/svc/thumbnails/${content.thumbnail}`}
-						alt="2024 Thumbnail"
-						layout="fill"
-						objectFit="contain"
-						draggable={false}
-					/>
-				</div>
-				<h1
-					style={{ lineHeight: 1 }}
-					className="text-2xl mt-auto mb-1 flex gap-2 items-center"
-				>
-					{content.title}
-					<GoArrow className="translate-y-[1px] text-brand-yellow" />
-				</h1>
-				<h2 style={{ lineHeight: 1, opacity: 0.75 }} className="text-lg">
-					{content.subtitle}
-				</h2>
+				{event.type === EventType.Blog && <BlogEvent event={event} />}
 			</div>
 		</div>
 	);

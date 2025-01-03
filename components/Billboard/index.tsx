@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import clsx from "clsx";
 
-import BillboardSVG from "@/public/svg/billboard.svg";
+import DefaultBillboardSVG from "@/public/svg/billboard.svg";
+import BlogBillboardSVG from "@/public/svg/blog-billboard.svg";
 import NewYearBillboardSVG from "@/public/svg/holiday-billboard.svg";
+import DefaultSVCBillboardSVG from "@/public/svg/svc-billboard.svg";
+
 import dynamic from "next/dynamic";
 import { EBillboardMode, type IServiceConfig } from "@/interfaces/svc";
 
@@ -16,6 +19,7 @@ const NewYearCountdown = dynamic(
 interface BillboardProps {
 	serviceConfig: IServiceConfig;
 	svc?: boolean;
+	blog?: boolean;
 	className?: string;
 	style?: React.CSSProperties;
 }
@@ -23,6 +27,7 @@ interface BillboardProps {
 const Billboard: React.FC<BillboardProps> = ({
 	serviceConfig,
 	svc = false,
+	blog = false,
 	className,
 	style = {},
 }) => {
@@ -32,6 +37,24 @@ const Billboard: React.FC<BillboardProps> = ({
 	useEffect(() => {
 		import("@lottiefiles/lottie-player");
 	}, []);
+
+	const Billboard = useMemo(() => {
+		if (blog) {
+			return BlogBillboardSVG;
+		}
+
+		if (svc) {
+			if (billboardMode === EBillboardMode.NEW_YEAR) {
+				return NewYearBillboardSVG;
+			}
+			if (billboardMode === EBillboardMode.DEFAULT) {
+				return DefaultSVCBillboardSVG;
+			}
+			return DefaultSVCBillboardSVG;
+		}
+
+		return DefaultBillboardSVG;
+	}, [blog, svc, billboardMode]);
 
 	return (
 		<div
@@ -46,17 +69,7 @@ const Billboard: React.FC<BillboardProps> = ({
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
-				{svc && newYearCountdownEnabled ? <NewYearCountdown /> : <></>}
-				{svc ? (
-					<>
-						{billboardMode === EBillboardMode.DEFAULT && <BillboardSVG />}
-						{billboardMode === EBillboardMode.NEW_YEAR && (
-							<NewYearBillboardSVG />
-						)}
-					</>
-				) : (
-					<BillboardSVG />
-				)}
+				<Billboard />
 				{svc && fireworksEnabled ? (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">
 						<lottie-player

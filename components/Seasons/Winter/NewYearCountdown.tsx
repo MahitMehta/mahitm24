@@ -23,7 +23,7 @@ const NewYearCountdown = () => {
 		// if new year is more than 10 days away, return current time (wish happy new year)
 		const endTimeInMS = 10 * 24 * 60 * 60 * 1000;
 		if (newUTCYear.getTime() - estOffset - now.getTime() > endTimeInMS) {
-			return Date.now();
+			return Date.now() + 2 * 1000;
 		}
 
 		return newUTCYear.getTime() - estOffset;
