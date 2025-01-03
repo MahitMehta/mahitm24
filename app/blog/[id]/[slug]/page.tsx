@@ -16,6 +16,7 @@ import { getFormattedDate } from "@/utils/common";
 import { redirect } from "next/navigation";
 import BlogArticle from "./BlogArticle";
 import BlogVideo from "./BlogVideo";
+import BlogDate from "./BlogDate";
 
 export const revalidate = 900;
 
@@ -127,7 +128,6 @@ export default async function BlogEventPage({
 		return redirect("/svc");
 	}
 
-	const formattedDate = getFormattedDate(new Date(event.published));
 	return (
 		<div
 			id="blog"
@@ -140,7 +140,9 @@ export default async function BlogEventPage({
 				<h1 style={{ lineHeight: 1 }} className="text-[3rem]">
 					{event.content.title}
 				</h1>
-				<span className="opacity-75">Published at {formattedDate}</span>
+				<span className="opacity-75">
+					Published at <BlogDate published={event.published} />
+				</span>
 				<br />
 				{event.type === EventType.Article && <BlogArticle event={event} />}
 				{event.type === EventType.Video && (
