@@ -11,6 +11,7 @@ const config: Config = {
 			base: "20px",
 			xl: "24px",
 			"2xl": "28px",
+			"3xl": "32px",
 		},
 		extend: {
 			colors: {

@@ -1,6 +1,5 @@
 import Billboard from "@/components/Billboard";
 import Footer from "@/components/Footer";
-import Platform from "@/components/Platform";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
 import type { Metadata } from "next";
@@ -11,12 +10,15 @@ import type {
 	IEvent,
 	IEventCollection,
 } from "@/interfaces/contentful";
+import Document from "@/components/Contentful/Document";
+import { getFormattedDate } from "@/utils/common";
+import { redirect } from "next/navigation";
 
 export const revalidate = 900;
 
 const blogSlugsQuery = gql`
-    query BlogEvents {
-        eventCollection(where: { type: "Blog" }) {
+    query BlogEvents($preview: Boolean!) {
+        eventCollection(where: { type: "Blog" }, preview: $preview) {
             items {
 				sys {
 					id
@@ -28,8 +30,8 @@ const blogSlugsQuery = gql`
 `;
 
 const blogEventQuery = gql`
-	query BlogEvent($id: String!) {
-		event(id:$id) {
+	query BlogEvent($id: String!, $preview: Boolean!) {
+		event(id:$id, preview: $preview) {
 			sys {
 				id
 			}
@@ -49,12 +51,18 @@ const blogEventQuery = gql`
 `;
 
 export async function generateStaticParams() {
-	const response = await fetchContentful<IEventCollection>(blogSlugsQuery);
+	const response = await fetchContentful<IEventCollection>(blogSlugsQuery, {
+		preview: process.env.NODE_ENV !== "production",
+	});
 
-	return response.eventCollection.items.map((event) => ({
-		id: event.sys.id,
-		slug: event.slug,
-	}));
+	const posts = response.eventCollection.items
+		.filter((event) => new Date(event.published) <= new Date())
+		.map((event) => ({
+			id: event.sys.id,
+			slug: event.slug,
+		}));
+
+	return posts;
 }
 
 export async function generateMetadata({
@@ -64,7 +72,10 @@ export async function generateMetadata({
 
 	const { event } = await fetchContentful<{ event: IEvent<IBlogEvent> }>(
 		blogEventQuery,
-		{ id },
+		{
+			id,
+			preview: process.env.NODE_ENV !== "production",
+		},
 	);
 
 	const thumbnailURL = `/cdn/v1/svc/thumbnails/${event.content.thumbnail}`;
@@ -88,19 +99,36 @@ export default async function BlogEventPage({
 	const { id } = await params;
 	const { event } = await fetchContentful<{ event: IEvent<IBlogEvent> }>(
 		blogEventQuery,
-		{ id },
+		{
+			id,
+			preview: process.env.NODE_ENV !== "production",
+		},
 	);
+
+	if (new Date(event.published) > new Date()) {
+		// Redirect to the blog page if the event is not published yet
+		// ("blog is locked")
+		return redirect("/svc");
+	}
+
+	const formattedDate = getFormattedDate(new Date(event.published));
 
 	return (
 		<div
-			id="search"
-			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden min-h-screen max-h-[1000px]"
+			id="blog"
+			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden min-h-screen"
 		>
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard blog serviceConfig={serviceConfig} />
-			<section className="building-flicker z-50 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
-				<Platform className="top-0 -translate-y-full billboard-flicker !absolute" />
+			<section className="building-flicker z-50 flex flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
+				<h1 style={{ lineHeight: 1 }} className="text-[3rem]">
+					{event.content.title}
+				</h1>
+				<span className="opacity-75">Published at {formattedDate}</span>
+				<br />
+				{event.content.body && <Document document={event.content.body.json} />}
+				<br />
 				<Footer />
 			</section>
 		</div>

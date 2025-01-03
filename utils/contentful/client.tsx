@@ -1,8 +1,7 @@
-import { GraphQLClient } from "graphql-request";
-
 const CONTENTFUL_ACCESS_TOKEN =
-	process.env.NEXT_PUBLIC_CONTENT_PREVIEW_ACCESS_TOKEN ||
-	process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
+	process.env.NODE_ENV === "production"
+		? process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+		: process.env.NEXT_PUBLIC_PREVIEW_ACCESS_TOKEN;
 
 export async function fetchContentful<T>(
 	query: string,

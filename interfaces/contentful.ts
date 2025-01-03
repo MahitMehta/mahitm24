@@ -1,3 +1,5 @@
+import type { Document } from "@contentful/rich-text-types";
+
 export interface IVideoEvent {
 	id: string;
 	title?: string;
@@ -7,6 +9,9 @@ export interface IBlogEvent {
 	title?: string;
 	subtitle?: string;
 	thumbnail?: string;
+	body?: {
+		json: Document;
+	};
 }
 
 export enum EventType {

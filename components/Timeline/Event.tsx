@@ -5,6 +5,7 @@ import { LockClosedIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { EventType, type IEvent } from "@/interfaces/contentful";
 import BlogEvent from "./BlogEvent";
+import { getFormattedDate } from "@/utils/common";
 
 interface IEventProps {
 	event: IEvent;
@@ -19,14 +20,10 @@ const Event: React.FC<IEventProps> = ({ event }) => {
 		return new Date(event.published) > new Date();
 	}, [event.published]);
 
-	const formmatedPublishedDate = useMemo(() => {
-		const date = new Date(event.published);
-		const hours = date.getHours();
-		const minutes = date.getMinutes().toString().padStart(2, "0");
-		const ampm = hours >= 12 ? "pm" : "am";
-		const formattedHours = hours % 12 || 12;
-		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${formattedHours}:${minutes} ${ampm}`;
-	}, [event.published]);
+	const formmatedPublishedDate = useMemo(
+		() => getFormattedDate(new Date(event.published)),
+		[event.published],
+	);
 
 	return (
 		<div
@@ -55,7 +52,7 @@ const Event: React.FC<IEventProps> = ({ event }) => {
 				<p className="flex space-x-1">
 					{locked && <LockClosedIcon width={18} />}
 					<span className="opacity-75 flex">
-						{locked ? "Locked till" : "Published on"}
+						{locked ? "Locked till" : "Published at"}
 					</span>
 					<span>{formmatedPublishedDate}</span>
 				</p>
