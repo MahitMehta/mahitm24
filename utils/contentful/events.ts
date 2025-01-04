@@ -1,10 +1,12 @@
+"use server";
+
 import { gql } from "graphql-request";
 import { fetchContentful } from "./client";
 import type { IEventCollection } from "@/interfaces/contentful";
 
 const eventsPreviewQuery = gql`
-	query EventsCollection($limit: Int, $skip: Int) {
-		eventCollection(limit: $limit, skip: $skip, order: published_DESC) {
+	query EventsCollection($limit: Int, $skip: Int, $preview: Boolean) {
+		eventCollection(limit: $limit, skip: $skip, order: published_DESC, preview: $preview) {
             total
 			items {
 				sys {
@@ -30,6 +32,10 @@ const eventsPreviewQuery = gql`
 	}
 `;
 
-export const getEventsPreview = async ({ limit = 3, skip = 0 }) => {
-	return fetchContentful<IEventCollection>(eventsPreviewQuery, { limit, skip });
+export const getEventsPreview = async ({ limit = 2, skip = 0 }) => {
+	return fetchContentful<IEventCollection>(eventsPreviewQuery, {
+		limit,
+		skip,
+		preview: process.env.NODE_ENV !== "production",
+	});
 };

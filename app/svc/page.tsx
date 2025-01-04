@@ -5,7 +5,6 @@ import Sky from "@/components/Sky";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Timeline from "@/components/Timeline";
 import { getServiceConfig } from "@/helpers/serviceConfig";
-import { useState } from "react";
 import { getEventsPreview } from "@/utils/contentful/events";
 
 export const revalidate = 3600;
@@ -14,7 +13,7 @@ export default async function SVCSearch() {
 	const serviceConfig = getServiceConfig();
 	const { newYearCountdownEnabled } = serviceConfig;
 
-	const defaultEventsPreview = await getEventsPreview({ limit: 3, skip: 0 });
+	const defaultEventsPreview = await getEventsPreview({ limit: 2, skip: 0 });
 
 	return (
 		<div
