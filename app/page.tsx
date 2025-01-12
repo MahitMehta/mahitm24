@@ -30,14 +30,19 @@ export default function Home() {
 	const serviceConfig = getServiceConfig();
 	const { newYearCountdownEnabled } = serviceConfig;
 
+	const getBanner = () => {
+		if (newYearCountdownEnabled) {
+			return <Banner label="New Year Countdown" href="/svc" />;
+		}
+		return <Banner label="Explore MahitM SVC" href="/svc" />;
+	};
+
 	return (
 		<div
 			id="home"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden"
 		>
-			{newYearCountdownEnabled && (
-				<Banner label="New Year Countdown" href="/svc" />
-			)}
+			{getBanner()}
 			<Sky />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard
