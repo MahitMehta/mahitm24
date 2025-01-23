@@ -10,7 +10,7 @@ interface BlogEventProps {
 const BlogEvent: React.FC<BlogEventProps> = ({ event }) => {
 	return (
 		<Link
-			href={`/blog/${event.sys.id}/${event.slug}`}
+			href={`/blog/${event.slug}`}
 			className="w-full h-full px-2 gap-0 flex flex-col py-2 cursor-pointer hover:opacity-75 transition-all duration-300 go-arrow-container"
 		>
 			<div className="h-full w-full relative">

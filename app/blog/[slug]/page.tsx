@@ -23,9 +23,6 @@ const blogSlugsQuery = gql`
     query BlogEvents($preview: Boolean!) {
         eventCollection(where: { type_in: ["Article","Video"] }, preview: $preview) {
             items {
-				sys {
-					id
-				}
                 slug
             }
         }
@@ -33,28 +30,30 @@ const blogSlugsQuery = gql`
 `;
 
 const blogEventQuery = gql`
-	query BlogEvent($id: String!, $preview: Boolean!) {
-		event(id:$id, preview: $preview) {
-			sys {
-				id
-			}
-			type
-			content {
-				... on Article {
-					title
-						subtitle
-						body {
-							json
-						}
-						thumbnail
-				}
-				... on Video {
-					title
+	query BlogEvent($slug: String!, $preview: Boolean!) {
+		eventCollection(where: { slug: $slug }, preview: $preview, limit: 1) {
+			items {
+				sys {
 					id
-					thumbnailOffset
 				}
+				type
+				content {
+					... on Article {
+						title
+							subtitle
+							body {
+								json
+							}
+							thumbnail
+					}
+					... on Video {
+						title
+						id
+						thumbnailOffset
+					}
+				}
+				published
 			}
-			published
 		}
 	}
 `;
@@ -67,7 +66,6 @@ export async function generateStaticParams() {
 	const posts = response.eventCollection.items
 		.filter((event) => new Date(event.published) <= new Date())
 		.map((event) => ({
-			id: event.sys.id,
 			slug: event.slug,
 		}));
 
@@ -76,21 +74,23 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
 	params,
-}: { params: Promise<{ id: string; slug: string }> }): Promise<Metadata> {
-	const id = (await params).id;
+}: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+	const slug = (await params).slug;
 
-	const { event } = await fetchContentful<{
-		event: IEvent<IArticleEvent | IVideoEvent>;
-	}>(blogEventQuery, {
-		id,
+	const response = await fetchContentful<IEventCollection>(blogEventQuery, {
+		slug,
 		preview: process.env.NODE_ENV !== "production",
 	});
 
+	const event = response.eventCollection.items[0];
+
 	let thumbnailURL: string;
 	if (event.type === EventType.Article) {
-		thumbnailURL = `/cdn/v1/svc/thumbnails/${(event.content as IArticleEvent).thumbnail}`;
+		const content = event.content as IArticleEvent;
+		thumbnailURL = `/cdn/v1/svc/thumbnails/${content.thumbnail}`;
 	} else {
-		thumbnailURL = `/cdn/v1/video/t/so_${(event.content as IVideoEvent).thumbnailOffset}/${(event.content as IVideoEvent).id}.webp`;
+		const content = event.content as IVideoEvent;
+		thumbnailURL = `/cdn/v1/video/t/so_${content.thumbnailOffset}/${content.id}.webp`;
 	}
 
 	return {
@@ -106,16 +106,16 @@ export async function generateMetadata({
 
 export default async function BlogEventPage({
 	params,
-}: { params: Promise<{ slug: string; id: string }> }) {
+}: { params: Promise<{ slug: string }> }) {
 	const serviceConfig = getServiceConfig();
 
-	const { id } = await params;
-	const { event } = await fetchContentful<{
-		event: IEvent<IArticleEvent | IVideoEvent>;
-	}>(blogEventQuery, {
-		id,
+	const slug = (await params).slug;
+	const response = await fetchContentful<IEventCollection>(blogEventQuery, {
+		slug,
 		preview: process.env.NODE_ENV !== "production",
 	});
+
+	const event = response.eventCollection.items[0];
 
 	if (
 		new Date(event.published) > new Date() &&
