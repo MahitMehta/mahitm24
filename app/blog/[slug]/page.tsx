@@ -112,11 +112,14 @@ export default async function BlogEventPage({
 
 	const slug = (await params).slug;
 	const { isEnabled: isDraftModeEnabled } = await draftMode();
-	const response = await fetchContentful<IEventCollection>(blogEventQuery, {
-		slug,
-		preview: process.env.NODE_ENV !== "production" || isDraftModeEnabled,
+	const response = await fetchContentful<IEventCollection>(
+		blogEventQuery,
+		{
+			slug,
+			preview: process.env.NODE_ENV !== "production" || isDraftModeEnabled,
+		},
 		isDraftModeEnabled,
-	});
+	);
 
 	const event = response.eventCollection.items[0];
 

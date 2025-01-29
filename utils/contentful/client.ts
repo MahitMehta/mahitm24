@@ -7,8 +7,6 @@ export async function fetchContentful<T>(
 	variables = {},
 	isDraftModeEnabled = false,
 ): Promise<T> {
-	console.log("prod:", CONTENTFUL_ACCESS_TOKEN);
-	console.log("preview:", CONTENTFUL_PREVIEW_ACCESS_TOKEN);
 	const access_token =
 		process.env.NODE_ENV !== "production" || isDraftModeEnabled
 			? CONTENTFUL_PREVIEW_ACCESS_TOKEN
@@ -29,6 +27,7 @@ export async function fetchContentful<T>(
 		.then((res) => {
 			if (res.errors) {
 				console.error(res.errors);
+				console.log("Access Token:", access_token);
 				throw new Error("Failed to fetch contentful");
 			}
 			return res.data;
