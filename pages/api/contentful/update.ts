@@ -5,8 +5,13 @@ enum EContentfulContentTypeID {
 	EVENT = "event",
 }
 
+enum EContentfulActionType {
+	DELETED_ENTRY = "DeletedEntry",
+}
+
 interface IContentfulWebhookPayload<T = object> {
 	sys: {
+		type: EContentfulActionType;
 		contentType: {
 			sys: {
 				id: EContentfulContentTypeID;
@@ -68,12 +73,14 @@ export default async function handler(
 	if (modelId === EContentfulContentTypeID.EVENT) {
 		(await attemptRevalidation(res, "/svc")) && revalidatedPages.push("/svc");
 
-		const fields = body.fields as IContentfulEventFields;
-		const type = fields.type["en-US"];
-		if (type === EventType.Article || type === EventType.Video) {
-			const blogPagePath = `/blog/${fields.slug["en-US"]}`;
-			(await attemptRevalidation(res, blogPagePath)) &&
-				revalidatedPages.push(blogPagePath);
+		if (body.sys.type !== EContentfulActionType.DELETED_ENTRY) {
+			const fields = body.fields as IContentfulEventFields;
+			const type = fields.type["en-US"];
+			if (type === EventType.Article || type === EventType.Video) {
+				const blogPagePath = `/blog/${fields.slug["en-US"]}`;
+				(await attemptRevalidation(res, blogPagePath)) &&
+					revalidatedPages.push(blogPagePath);
+			}
 		}
 	}
 
@@ -82,7 +89,7 @@ export default async function handler(
 		revalidatedPages,
 		error: false,
 	};
-	console.log(response);
 
+	console.log(response);
 	return res.status(200).json(response);
 }
