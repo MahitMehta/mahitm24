@@ -3,6 +3,7 @@
 import { gql } from "graphql-request";
 import { fetchContentful } from "./client";
 import type { IEventCollection } from "@/interfaces/contentful";
+import { draftMode } from "next/headers";
 
 const eventsPreviewQuery = gql`
 	query EventsCollection($limit: Int, $skip: Int, $preview: Boolean) {
@@ -33,9 +34,15 @@ const eventsPreviewQuery = gql`
 `;
 
 export const getEventsPreview = async ({ limit = 2, skip = 0 }) => {
-	return fetchContentful<IEventCollection>(eventsPreviewQuery, {
-		limit,
-		skip,
-		preview: process.env.NODE_ENV !== "production",
-	});
+	const { isEnabled } = await draftMode();
+
+	return fetchContentful<IEventCollection>(
+		eventsPreviewQuery,
+		{
+			limit,
+			skip,
+			preview: process.env.NODE_ENV !== "production" || isEnabled,
+		},
+		isEnabled,
+	);
 };
