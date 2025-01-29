@@ -63,9 +63,7 @@ export default async function handler(
 	}
 
 	const body = JSON.parse(req.body) as IContentfulWebhookPayload;
-	console.log(body);
 	const modelId = body.sys.contentType.sys.id;
-	console.log(modelId);
 
 	if (modelId === EContentfulContentTypeID.EVENT) {
 		(await attemptRevalidation(res, "/svc")) && revalidatedPages.push("/svc");
@@ -79,9 +77,12 @@ export default async function handler(
 		}
 	}
 
-	return res.status(200).json({
+	const response = {
 		message: "Success",
 		revalidatedPages,
 		error: false,
-	});
+	};
+	console.log(response);
+
+	return res.status(200).json(response);
 }
