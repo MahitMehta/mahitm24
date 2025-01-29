@@ -27,7 +27,6 @@ export async function fetchContentful<T>(
 		.then((res) => {
 			if (res.errors) {
 				console.error(res.errors);
-				console.log("Access Token:", access_token);
 				throw new Error("Failed to fetch contentful");
 			}
 			return res.data;
