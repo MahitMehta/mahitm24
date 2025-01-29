@@ -20,7 +20,7 @@ export default async function SVCSearch() {
 			id="search"
 			className="flex flex-col items-center p-3 max-w-[100vw] overflow-hidden min-h-screen max-h-[1000px]"
 		>
-			<Sky seasons />
+			<Sky serviceConfig={serviceConfig} />
 			<div className="w-full h-[300px] fixed bottom-0 brightness-50 building-container" />
 			<Billboard
 				svc

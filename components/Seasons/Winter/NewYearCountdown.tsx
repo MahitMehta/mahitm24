@@ -1,6 +1,6 @@
 "use client";
 
-import useMobile from "@/app/hooks/useMobile";
+import useMobile from "@/hooks/useMobile";
 import SplitFlapCountdown from "@/components/SplitFlapCountdown";
 import React, { useMemo } from "react";
 import { getTimezoneOffset } from "date-fns-tz";

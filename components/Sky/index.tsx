@@ -1,5 +1,6 @@
 "use client";
 
+import type { IServiceConfig } from "@/interfaces/svc";
 import { useCallback, useEffect, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -136,10 +137,10 @@ class Droplet {
 }
 
 interface SkyProps {
-	seasons?: boolean;
+	serviceConfig?: IServiceConfig;
 }
 
-const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
+const Sky: React.FC<SkyProps> = ({ serviceConfig }) => {
 	const skyCanvasRef = useRef<HTMLCanvasElement | null>(null);
 	const precipCanvasRef = useRef<HTMLCanvasElement | null>(null);
 	const frameId = useRef<number | null>(null);
@@ -165,7 +166,7 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 				star.update(skyCtx);
 			}
 
-			if (!seasons) return;
+			if (!serviceConfig) return;
 
 			for (const droplet of droplets.current) {
 				droplet.update(precipCtx);
@@ -175,7 +176,7 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 				snowflake.update(precipCtx);
 			}
 		},
-		[seasons],
+		[serviceConfig],
 	);
 
 	const resetElements = useCallback(() => {
@@ -211,13 +212,7 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 				stars.current.push(new Star(x, y));
 			}
 
-			if (seasons) {
-				// for (let i = 0; i < MAX_DROPLETS; i++) {
-				// 	const x = Math.random() * width;
-				// 	const y = Math.random() * height;
-				// 	droplets.current.push(new Droplet(x, y));
-				// }
-
+			if (serviceConfig?.snowEnabled) {
 				for (let i = 0; i < MAX_SNOWFLAKES; i++) {
 					const x = Math.random() * width;
 					const y = Math.random() * height;
@@ -225,9 +220,17 @@ const Sky: React.FC<SkyProps> = ({ seasons = false }) => {
 				}
 			}
 
+			if (serviceConfig?.rainEnabled) {
+				for (let i = 0; i < MAX_DROPLETS; i++) {
+					const x = Math.random() * width;
+					const y = Math.random() * height;
+					droplets.current.push(new Droplet(x, y));
+				}
+			}
+
 			render(skyCanvas, skyCtx, precipCanvas, precipCtx);
 		},
-		[render, resetElements, seasons],
+		[render, resetElements, serviceConfig],
 	);
 
 	useEffect(() => {

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import React, { useEffect, useMemo } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 const useMobile = () => {
 	const [dimensions, setDimensions] = React.useState({
