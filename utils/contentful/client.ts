@@ -1,13 +1,13 @@
-const CONTENTFUL_ACCESS_TOKEN =
-	process.env.NODE_ENV === "production"
-		? process.env.CONTENTFUL_ACCESS_TOKEN ||
-			process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
-		: process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
-
 export async function fetchContentful<T>(
 	query: string,
 	variables = {},
+	isDraftModeEnabled = false,
 ): Promise<T> {
+	const CONTENTFUL_ACCESS_TOKEN =
+		process.env.NODE_ENV !== "production" || isDraftModeEnabled
+			? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
+			: process.env.CONTENTFUL_ACCESS_TOKEN;
+
 	return fetch(
 		`https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
 		{

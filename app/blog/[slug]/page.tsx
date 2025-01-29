@@ -16,6 +16,7 @@ import { redirect } from "next/navigation";
 import BlogArticle from "./BlogArticle";
 import BlogVideo from "./BlogVideo";
 import BlogDate from "./BlogDate";
+import { draftMode } from "next/headers";
 
 export const revalidate = 900;
 
@@ -110,9 +111,11 @@ export default async function BlogEventPage({
 	const serviceConfig = getServiceConfig();
 
 	const slug = (await params).slug;
+	const { isEnabled: isDraftModeEnabled } = await draftMode();
 	const response = await fetchContentful<IEventCollection>(blogEventQuery, {
 		slug,
-		preview: process.env.NODE_ENV !== "production",
+		preview: process.env.NODE_ENV !== "production" || isDraftModeEnabled,
+		isDraftModeEnabled,
 	});
 
 	const event = response.eventCollection.items[0];
