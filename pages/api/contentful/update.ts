@@ -1,8 +1,11 @@
 import { EventType } from "@/interfaces/contentful";
+import { getParentEntry } from "@/utils/contentful/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 enum EContentfulContentTypeID {
 	EVENT = "event",
+	ARTICLE = "article",
+	VIDEO = "video",
 }
 
 enum EContentfulActionType {
@@ -11,6 +14,7 @@ enum EContentfulActionType {
 
 interface IContentfulWebhookPayload<T = object> {
 	sys: {
+		id: string;
 		type: EContentfulActionType;
 		contentType: {
 			sys: {
@@ -81,6 +85,19 @@ export default async function handler(
 				(await attemptRevalidation(res, blogPagePath)) &&
 					revalidatedPages.push(blogPagePath);
 			}
+		}
+	} else if (
+		modelId === EContentfulContentTypeID.ARTICLE ||
+		modelId === EContentfulContentTypeID.VIDEO
+	) {
+		const eventId = body.sys.id;
+		const parentEntry = await getParentEntry(eventId);
+
+		if (parentEntry) {
+			const slug = parentEntry.fields.slug;
+			const parentPath = `/svc/${slug}`;
+			(await attemptRevalidation(res, parentPath)) &&
+				revalidatedPages.push(parentPath);
 		}
 	}
 
