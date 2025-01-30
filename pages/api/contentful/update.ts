@@ -95,7 +95,7 @@ export default async function handler(
 
 		if (parentEntry) {
 			const slug = parentEntry.fields.slug;
-			const parentPath = `/svc/${slug}`;
+			const parentPath = `/blog/${slug}`;
 			(await attemptRevalidation(res, parentPath)) &&
 				revalidatedPages.push(parentPath);
 		}
