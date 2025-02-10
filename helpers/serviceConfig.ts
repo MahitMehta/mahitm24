@@ -1,10 +1,13 @@
-import { EBillboardMode, type IServiceConfig } from "@/interfaces/svc";
+import {
+	EBillboardMode,
+	ECountdownType,
+	type IServiceConfig,
+} from "@/interfaces/svc";
 import { getTimezoneOffset } from "date-fns-tz";
 
 // Returns the month and day in EST.
 // The month is first, then the day.
-const dateInEST = (): [number, number] => {
-	const now = new Date();
+const dateInEST = (now = new Date()): [number, number] => {
 	const formatter = new Intl.DateTimeFormat([], {
 		timeZone: "America/New_York",
 		month: "2-digit",
@@ -46,22 +49,33 @@ const getESTOffset = (): number => {
 };
 
 export const getServiceConfig = (): IServiceConfig => {
-	let countdownGoal = 0;
+	let countdownEndpoint = 0;
 
 	const [month, day] = dateInEST();
 	const isNewYearPeriod = getIsNewYearPeriod(month, day);
 	const isBirthdayPeriod = getIsBirthdayPeriod(month, day);
 
-	if (isBirthdayPeriod) {
-		countdownGoal =
-			new Date(`${new Date().getUTCFullYear()}-02-13`).getTime() -
-			getESTOffset();
+	const yearUTC = new Date().getUTCFullYear();
+
+	let countdownEnabled = ECountdownType.OFF;
+	if (isNewYearPeriod) {
+		countdownEnabled = ECountdownType.NEW_YEAR;
+		countdownEndpoint =
+			new Date(`${yearUTC + 1}-01-01`).getTime() - getESTOffset();
+		// If it is January, then continue showing the Happy New Year message
+		// by setting the countdown endpoint to 0
+		if (month === 1) {
+			countdownEndpoint = 0;
+		}
+	} else if (isBirthdayPeriod) {
+		countdownEnabled = ECountdownType.BIRTHDAY;
+		countdownEndpoint = new Date(`${yearUTC}-02-13`).getTime() - getESTOffset();
 	}
 
 	return {
 		fireworksEnabled: isNewYearPeriod,
-		countdownGoal,
-		newYearCountdownEnabled: isNewYearPeriod,
+		countdownEndpoint: countdownEndpoint,
+		countdownEnabled,
 		snowEnabled: isNewYearPeriod,
 		rainEnabled: false,
 		billboardMode: isNewYearPeriod

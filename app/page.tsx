@@ -11,6 +11,7 @@ import { ESkillTag } from "@/components/SkillTag";
 import Sky from "@/components/Sky";
 import WindowRow from "@/components/WindowRow";
 import { getServiceConfig } from "@/helpers/serviceConfig";
+import { ECountdownType } from "@/interfaces/svc";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
 	faEnvelope,
@@ -28,10 +29,10 @@ export const revalidate = 3600;
 
 export default function Home() {
 	const serviceConfig = getServiceConfig();
-	const { newYearCountdownEnabled } = serviceConfig;
+	const { countdownEnabled } = serviceConfig;
 
 	const getBanner = () => {
-		if (newYearCountdownEnabled) {
+		if (countdownEnabled === ECountdownType.NEW_YEAR) {
 			return <Banner label="New Year Countdown" href="/svc" />;
 		}
 		return <Banner label="Explore MahitM SVC" href="/svc" />;

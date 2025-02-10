@@ -9,11 +9,14 @@ import NewYearBillboardSVG from "@/public/svg/holiday-billboard.svg";
 import DefaultSVCBillboardSVG from "@/public/svg/svc-billboard.svg";
 
 import dynamic from "next/dynamic";
-import { EBillboardMode, type IServiceConfig } from "@/interfaces/svc";
-import SplitFlapCountdown from "../SplitFlapCountdown";
+import {
+	EBillboardMode,
+	ECountdownType,
+	type IServiceConfig,
+} from "@/interfaces/svc";
 
-const NewYearCountdown = dynamic(
-	() => import("@/components/Seasons/Winter/NewYearCountdown"),
+const GeneralCountdown = dynamic(
+	() => import("@/components/Countdown/GeneralCountdown"),
 	{ ssr: false },
 );
 
@@ -33,10 +36,10 @@ const Billboard: React.FC<BillboardProps> = ({
 	style = {},
 }) => {
 	const {
-		newYearCountdownEnabled,
+		countdownEnabled,
 		fireworksEnabled,
 		billboardMode,
-		countdownGoal,
+		countdownEndpoint,
 	} = serviceConfig;
 
 	useEffect(() => {
@@ -74,25 +77,26 @@ const Billboard: React.FC<BillboardProps> = ({
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
-				{svc && countdownGoal > 0 ? (
-					<SplitFlapCountdown
-						fontSize={100}
-						gap={4}
-						futureDate={countdownGoal}
+				{svc && countdownEnabled === ECountdownType.BIRTHDAY ? (
+					<GeneralCountdown
+						completedMessage={"Happy Birthday!"}
+						futureDate={countdownEndpoint}
 						label="Birthday Countdown"
-						completedMessage={
-							<span
-								className="text-center fade-in indian-gradient"
-								style={{ fontSize: 75, lineHeight: 1 }}
-							>
-								Happy Birthday
-							</span>
-						}
+						rewindAfterComplete
 					/>
 				) : (
 					<></>
 				)}
-				{svc && newYearCountdownEnabled ? <NewYearCountdown /> : <></>}
+				{svc && countdownEnabled === ECountdownType.NEW_YEAR ? (
+					<GeneralCountdown
+						completedMessage={"Happy New Year!"}
+						futureDate={countdownEndpoint}
+						label="EST New Year Countdown"
+						rewindAfterComplete
+					/>
+				) : (
+					<></>
+				)}
 				<BillboardSVG />
 				{svc && fireworksEnabled ? (
 					<div className="-z-10 absolute flex -top-[50%] justify-between w-full">

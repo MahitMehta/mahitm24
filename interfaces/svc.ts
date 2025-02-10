@@ -3,15 +3,20 @@ export enum EBillboardMode {
 	NEW_YEAR = 1,
 }
 
+export enum ECountdownType {
+	OFF = 0,
+	NEW_YEAR = 1,
+	BIRTHDAY = 2,
+}
+
 export interface IServiceConfig {
 	fireworksEnabled: boolean;
 
-	// The countdown goal is the number of ms since
+	// The countdown endpoint is the number of ms since
 	// the Unix epoch representing the end of the countdown.
 	// Honored if no other special countdown is active.
-	countdownGoal: number;
-
-	newYearCountdownEnabled: boolean;
+	countdownEndpoint: number;
+	countdownEnabled: ECountdownType;
 	snowEnabled: boolean;
 	rainEnabled: boolean;
 	billboardMode: EBillboardMode;
