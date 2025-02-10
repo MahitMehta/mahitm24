@@ -11,7 +11,7 @@ export const revalidate = 3600;
 
 export default async function SVCSearch() {
 	const serviceConfig = getServiceConfig();
-	const { newYearCountdownEnabled } = serviceConfig;
+	const { newYearCountdownEnabled, countdownGoal } = serviceConfig;
 
 	const defaultEventsPreview = await getEventsPreview({ limit: 2, skip: 0 });
 
@@ -26,7 +26,7 @@ export default async function SVCSearch() {
 				svc
 				serviceConfig={serviceConfig}
 				style={{
-					marginTop: newYearCountdownEnabled ? "15vh" : 0,
+					marginTop: newYearCountdownEnabled || countdownGoal > 0 ? "15vh" : 0,
 				}}
 			/>
 			<section className="building-flicker z-50 flex items-center flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">

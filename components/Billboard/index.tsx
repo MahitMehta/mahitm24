@@ -10,6 +10,7 @@ import DefaultSVCBillboardSVG from "@/public/svg/svc-billboard.svg";
 
 import dynamic from "next/dynamic";
 import { EBillboardMode, type IServiceConfig } from "@/interfaces/svc";
+import SplitFlapCountdown from "../SplitFlapCountdown";
 
 const NewYearCountdown = dynamic(
 	() => import("@/components/Seasons/Winter/NewYearCountdown"),
@@ -31,8 +32,12 @@ const Billboard: React.FC<BillboardProps> = ({
 	className,
 	style = {},
 }) => {
-	const { newYearCountdownEnabled, fireworksEnabled, billboardMode } =
-		serviceConfig;
+	const {
+		newYearCountdownEnabled,
+		fireworksEnabled,
+		billboardMode,
+		countdownGoal,
+	} = serviceConfig;
 
 	useEffect(() => {
 		import("@lottiefiles/lottie-player");
@@ -69,6 +74,24 @@ const Billboard: React.FC<BillboardProps> = ({
 					"left-0 absolute bottom-0 w-[calc(109%)] billboard billboard-flicker flex flex-col items-center"
 				}
 			>
+				{svc && countdownGoal > 0 ? (
+					<SplitFlapCountdown
+						fontSize={100}
+						gap={4}
+						futureDate={countdownGoal}
+						label="Birthday Countdown"
+						completedMessage={
+							<span
+								className="text-center fade-in indian-gradient"
+								style={{ fontSize: 75, lineHeight: 1 }}
+							>
+								Happy Birthday
+							</span>
+						}
+					/>
+				) : (
+					<></>
+				)}
 				{svc && newYearCountdownEnabled ? <NewYearCountdown /> : <></>}
 				<BillboardSVG />
 				{svc && fireworksEnabled ? (

@@ -83,6 +83,12 @@ export async function generateMetadata({
 		preview: process.env.NODE_ENV !== "production",
 	});
 
+	if (response.eventCollection.items.length === 0) {
+		return {
+			title: "MahitM Blog",
+		};
+	}
+
 	const event = response.eventCollection.items[0];
 
 	let thumbnailURL: string;
@@ -120,6 +126,10 @@ export default async function BlogEventPage({
 		},
 		isDraftModeEnabled,
 	);
+
+	if (response.eventCollection.items.length === 0) {
+		return redirect("/svc");
+	}
 
 	const event = response.eventCollection.items[0];
 
