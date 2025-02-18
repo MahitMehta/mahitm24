@@ -7,6 +7,7 @@ import {
 	EventType,
 	type IVideoEvent,
 	type IEvent,
+	type IArticleEvent,
 } from "@/interfaces/contentful";
 import BlogEvent from "./BlogEvent";
 import { getFormattedDate } from "@/utils/common";
@@ -82,7 +83,9 @@ const Event: React.FC<IEventProps> = ({ className, event }) => {
 					/>
 				</div>
 				<div className="w-full h-full px-2 gap-0 flex flex-col py-2 cursor-pointer hover:opacity-75 transition-all duration-300 go-arrow-container">
-					{event.type === EventType.Article && <BlogEvent event={event} />}
+					{event.type === EventType.Article && (
+						<BlogEvent event={event as IEvent<IArticleEvent>} />
+					)}
 					{event.type === EventType.Video && (
 						<VideoEvent event={event as IEvent<IVideoEvent>} />
 					)}
