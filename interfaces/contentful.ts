@@ -6,7 +6,26 @@ export interface IVideoEvent {
 	thumbnailOffset: number;
 }
 
+export enum EMediaType {
+	Image = "Image",
+	Video = "Video",
+}
+
+export interface IMedia {
+	id: string;
+	type: EMediaType;
+	sys: {
+		id: string;
+	};
+	thumbnailOffset: number;
+}
+
+export interface IHighlightedMediaCollection {
+	items: IMedia[];
+}
+
 export interface IArticleEvent {
+	highlightedMediaCollection: IHighlightedMediaCollection;
 	title?: string;
 	subtitle?: string;
 	thumbnail?: string;

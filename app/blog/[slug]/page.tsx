@@ -41,11 +41,18 @@ const blogEventQuery = gql`
 				content {
 					... on Article {
 						title
-							subtitle
-							body {
-								json
+						subtitle
+						body {
+							json
+						}
+						thumbnail
+						highlightedMediaCollection {
+							items {
+								id
+								type
+								thumbnailOffset
 							}
-							thumbnail
+						}
 					}
 					... on Video {
 						title
@@ -159,7 +166,9 @@ export default async function BlogEventPage({
 					Published at <BlogDate published={event.published} />
 				</span>
 				<br />
-				{event.type === EventType.Article && <BlogArticle event={event} />}
+				{event.type === EventType.Article && (
+					<BlogArticle event={event as IEvent<IArticleEvent>} />
+				)}
 				{event.type === EventType.Video && (
 					<BlogVideo event={event as IEvent<IVideoEvent>} />
 				)}
