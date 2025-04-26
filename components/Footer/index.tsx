@@ -21,6 +21,8 @@ const LinkIcon: React.FC<LinkIconProps> = ({ href, icon }) => {
 	return (
 		<a rel="noopener noreferrer" target="_blank" href={href}>
 			<FontAwesomeIcon
+				width={16}
+				height={16}
 				icon={icon}
 				className="hover:text-brand-yellow transition-colors"
 			/>

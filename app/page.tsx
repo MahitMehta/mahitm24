@@ -184,7 +184,11 @@ export default function Home() {
 									href="/resume"
 									className="hover:text-brand-yellow transition-colors"
 								>
-									<FontAwesomeIcon icon={faFileDownload} />
+									<FontAwesomeIcon
+										width={16}
+										height={16}
+										icon={faFileDownload}
+									/>
 								</a>
 								<Link
 									rel="noopener noreferrer"
@@ -192,17 +196,16 @@ export default function Home() {
 									href="/cdn/v1/resume"
 									className="hover:text-brand-yellow transition-colors"
 								>
-									<FontAwesomeIcon icon={faExpand} />
+									<FontAwesomeIcon width={16} height={16} icon={faExpand} />
 								</Link>
 							</div>
 						}
 						label={"Resume [2024]"}
 					>
 						<div className="relative">
-							<Image
+							<img
 								draggable={false}
 								sizes="100vw"
-								quality={100}
 								width={0}
 								height={0}
 								style={{
@@ -238,10 +241,15 @@ export default function Home() {
 						rel="noopener noreferrer"
 						href="https://keyoxide.org/aspe%3Akeyoxide.org%3AY36Q6VEPBFR3HWQXJKA35WGFP4"
 					>
-						<span>
-							<FontAwesomeIcon className="mr-2" icon={faLock} />
+						<span className="flex items-center">
+							<FontAwesomeIcon
+								className="mr-2"
+								width={16}
+								height={16}
+								icon={faLock}
+							/>
 							Identity Proof ={" "}
-							<span className="bg-brand-blue-darker py-[1px] px-2 rounded-sm">
+							<span className="ml-1 bg-brand-blue-darker py-[1px] px-2 rounded-sm">
 								aspe:keyoxide.org:Y36Q6VEPBFR3HWQXJKA35WGFP4
 							</span>
 						</span>

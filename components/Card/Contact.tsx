@@ -21,7 +21,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
 			<Card className="go-arrow-container pr-1 flex justify-between items-center">
 				<span>{name}</span>
 				<span className="flex items-center gap-2">
-					<FontAwesomeIcon icon={icon} />
+					<FontAwesomeIcon width={16} height={16} icon={icon} />
 					<span>{value}</span>
 					<GoArrow className="ml-1 text-brand-yellow" />
 				</span>
