@@ -8,10 +8,12 @@ import {
 	type IVideoEvent,
 	type IEvent,
 	type IArticleEvent,
+	type ISongEvent,
 } from "@/interfaces/contentful";
 import BlogEvent from "./BlogEvent";
 import { getFormattedDate } from "@/utils/common";
 import VideoEvent from "./VideoEvent";
+import SongEvent from "./SongEvent";
 
 interface IEventProps {
 	className?: string;
@@ -88,6 +90,9 @@ const Event: React.FC<IEventProps> = ({ className, event }) => {
 					)}
 					{event.type === EventType.Video && (
 						<VideoEvent event={event as IEvent<IVideoEvent>} />
+					)}
+					{event.type === EventType.Song && (
+						<SongEvent event={event as IEvent<ISongEvent>} />
 					)}
 				</div>
 			</div>

@@ -34,12 +34,18 @@ export interface IArticleEvent {
 	};
 }
 
+export interface ISongEvent {
+	spotifyId: string;
+	title?: string;
+}
+
 export enum EventType {
 	Article = "Article",
 	Video = "Video",
+	Song = "Song",
 }
 
-export interface IEvent<T = IArticleEvent | IVideoEvent> {
+export interface IEvent<T = IArticleEvent | IVideoEvent | ISongEvent> {
 	sys: {
 		id: string;
 	};

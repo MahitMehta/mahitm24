@@ -24,6 +24,10 @@ const eventsPreviewQuery = gql`
 						id
 						thumbnailOffset
 					}
+					... on Song {
+						title
+						spotifyId
+					}
 				}
 				slug,
 				type,

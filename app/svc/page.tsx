@@ -45,6 +45,7 @@ export default async function SVCSearch() {
 					</span>
 				</div>
 			</section>
+			<section className="mt-2" />
 			<Timeline events={defaultEventsPreview} />
 			<section className="building-flicker z-40 flex items-center mt-auto flex-col w-full max-w-screen-md p-6 building relative bg-brand-blue">
 				<Platform className="top-0 -translate-y-full billboard-flicker !absolute" />

@@ -23,8 +23,14 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
 	const [canMoveRight, setCanMoveRight] = useState(false);
 	const [canMoveLeft, setCanMoveLeft] = useState(false);
 
+	const getSlidesToScroll = useCallback(() => {
+		if (typeof window === "undefined") return 1;
+
+		return window.innerWidth < 768 ? 1 : 2;
+	}, []);
+
 	const [emblaRef, emblaApi] = useEmblaCarousel({
-		slidesToScroll: 1,
+		slidesToScroll: getSlidesToScroll(),
 		direction: "rtl",
 	});
 
@@ -42,12 +48,15 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
 	useEffect(() => {
 		if (!emblaApi) return;
 
-		const onResize = () => emblaApi.reInit();
+		const onResize = () =>
+			emblaApi.reInit({
+				slidesToScroll: getSlidesToScroll(),
+			});
 		window.addEventListener("resize", onResize);
 		emblaApi.on("destroy", () =>
 			window.removeEventListener("resize", onResize),
 		);
-	}, [emblaApi]);
+	}, [emblaApi, getSlidesToScroll]);
 
 	const outOfEvents = useMemo(() => slides.length >= total, [slides, total]);
 
@@ -117,30 +126,42 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
 						onKeyDown={() => {}}
 						onClick={onLeftButtonClick}
 						className={clsx(
+							"bg-brand-blue-darker border-2 border-brand-blue-accent",
 							"absolute left-0 top-1/2 -translate-y-1/2 z-50 transition-opacity",
-							isLoading ? "" : "hover:opacity-75",
 							outOfEvents && !canMoveLeft
 								? "opacity-75 cursor-not-allowed"
 								: "opacity-100 cursor-pointer",
 						)}
 					>
 						{isLoading ? (
-							<ArrowPathIcon className="spin text-brand-yellow" width={28} />
+							<ArrowPathIcon
+								className={clsx("spin text-brand-yellow")}
+								width={28}
+							/>
 						) : (
-							<ChevronLeftIcon width={28} color="white" />
+							<ChevronLeftIcon
+								width={28}
+								color="white"
+								className={clsx(!outOfEvents && "hover:text-brand-yellow")}
+							/>
 						)}
 					</div>
 					<div
 						onKeyDown={() => {}}
 						onClick={onRightButtonClick}
 						className={clsx(
+							"bg-brand-blue-darker border-2 border-brand-blue-accent",
 							"absolute right-0 top-1/2 -translate-y-1/2 z-50 hover:opacity-75 transition-opacity",
 							canMoveRight
 								? "opacity-100 cursor-pointer "
 								: "opacity-75 cursor-not-allowed",
 						)}
 					>
-						<ChevronRightIcon width={28} color="white" />
+						<ChevronRightIcon
+							width={28}
+							color="white"
+							className={clsx(!outOfEvents && "hover:text-brand-yellow")}
+						/>
 					</div>
 				</div>
 			</div>
