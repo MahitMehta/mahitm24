@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import GoArrow from "@/components/GoArrow";
 import Card from "@/components/Card";
-import { useCallback, useEffect } from "react";
+import { use, useCallback, useEffect } from "react";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
@@ -27,27 +27,32 @@ const LoginForm = () => {
 		}
 	}, [user, searchParams, router]);
 
-	const signInWithGitHub = useCallback(async () => {
-		const origin = window.location.origin;
-		const next = searchParams?.get("next");
+	const signInWithOAuth = useCallback(
+		async (provider: "google" | "github") => {
+			const origin = window.location.origin;
+			const next = searchParams?.get("next");
 
-		const { error } = await supabase.auth.signInWithOAuth({
-			provider: "github",
-			options: {
-				redirectTo: next ? `${origin}/login?next=${next}` : `${origin}/svc`,
-			},
-		});
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: provider,
+				options: {
+					redirectTo: next ? `${origin}/login?next=${next}` : `${origin}/svc`,
+				},
+			});
 
-		if (error) {
-			console.error("GitHub sign-in error:", error);
-		}
-	}, [searchParams]);
+			if (error) {
+				console.error(`${provider} sign-in error:`, error);
+			}
+		},
+		[searchParams],
+	);
 
 	return (
 		<Card className="my-3 py-3 w-full flex flex-col items-center gap-3">
 			<GoogleOneTap />
 			<button
-				onClick={signInWithGitHub}
+				onClick={() => {
+					signInWithOAuth("github");
+				}}
 				type="button"
 				className="w-full go-arrow-container flex justify-center items-center h-10 bg-black border-2 border-brand-blue-accent"
 			>
@@ -62,6 +67,9 @@ const LoginForm = () => {
 				<GoArrow className="ml-2" />
 			</button>
 			<button
+				onClick={() => {
+					signInWithOAuth("google");
+				}}
 				type="button"
 				className="w-full go-arrow-container flex justify-center items-center h-10 bg-black border-2 border-brand-blue-accent"
 			>

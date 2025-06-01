@@ -28,7 +28,6 @@ const GoogleOneTap = () => {
 
 	useEffect(() => {
 		const initializeGoogleOneTap = () => {
-			console.log("Initializing Google One Tap");
 			window.addEventListener("load", async () => {
 				const [nonce, hashedNonce] = await generateNonce();
 				console.log("Nonce: ", nonce, hashedNonce);
@@ -50,15 +49,13 @@ const GoogleOneTap = () => {
 					callback: async (response: CredentialResponse) => {
 						try {
 							// send id token returned in response.credential to supabase
-							const { data, error } = await supabase.auth.signInWithIdToken({
+							const { error } = await supabase.auth.signInWithIdToken({
 								provider: "google",
 								token: response.credential,
 								nonce,
 							});
 
 							if (error) throw error;
-							console.log("Session data: ", data);
-							console.log("Successfully logged in with Google One Tap");
 
 							// redirect to protected page
 							router.push("/");
