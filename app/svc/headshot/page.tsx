@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
 
+export const revalidate = 3600;
+
 export default function HeadshotPage() {
 	const serviceConfig = getServiceConfig();
 

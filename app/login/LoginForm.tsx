@@ -10,6 +10,7 @@ import { createSupabaseClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/utils/atom";
+import GoogleOneTap from "@/components/GoogleOneTap";
 
 const supabase = createSupabaseClient();
 
@@ -44,6 +45,7 @@ const LoginForm = () => {
 
 	return (
 		<Card className="my-3 py-3 w-full flex flex-col items-center gap-3">
+			<GoogleOneTap />
 			<button
 				onClick={signInWithGitHub}
 				type="button"
