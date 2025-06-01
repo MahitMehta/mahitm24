@@ -6,7 +6,6 @@ interface SongEventProps {
 }
 
 const SongEvent: React.FC<SongEventProps> = ({ event }) => {
-	console.log("SongEvent", event.content);
 	const spotifyURL = useMemo(() => {
 		return `https://open.spotify.com/embed/track/${event.content.spotifyId}`;
 	}, [event.content.spotifyId]);

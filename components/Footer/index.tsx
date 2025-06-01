@@ -10,7 +10,12 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ArrowUpCircleIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { useAtom } from "jotai";
+import { userAtom } from "@/utils/atom";
+import { useCallback, useEffect } from "react";
+import { createSupabaseClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 interface LinkIconProps {
 	href: string;
@@ -30,9 +35,32 @@ const LinkIcon: React.FC<LinkIconProps> = ({ href, icon }) => {
 	);
 };
 
-const Footer = () => {
+const supabase = createSupabaseClient();
+
+const Footer = ({ className }: { className?: string }) => {
+	const [user, setUser] = useAtom(userAtom);
+
+	useEffect(() => {
+		if (user) return;
+
+		supabase.auth.getUser().then(({ data }) => {
+			if (data) {
+				setUser(data.user);
+			}
+		});
+	}, [setUser, user]);
+
+	const router = useRouter();
+
+	const handleLogOut = useCallback(() => {
+		setUser(null);
+		supabase.auth.signOut().then(() => {
+			router.refresh();
+		});
+	}, [setUser, router]);
+
 	return (
-		<Card className="py-3 md:py-1 mt-auto w-full">
+		<Card className={clsx("py-3 md:py-1 mt-auto w-full", className)}>
 			<footer className="min-h-8 flex sm:flex-row flex-col-reverse items-center gap-2 sm:justify-between">
 				<div className="flex h-full items-center">
 					<Link href="/#home" className="w-full h-full">
@@ -46,12 +74,16 @@ const Footer = () => {
 				<span className="md:hidden h-[1px] w-12 bg-brand-blue inline-block my-2" />
 				<div className="flex gap-1 items-center">
 					<span className="highlighted">
-						<Link href="#home">
-							<ArrowUpCircleIcon
-								className="hover:text-brand-yellow transition-colors"
-								width={18}
-							/>
-						</Link>
+						{user ? (
+							<span
+								onClick={handleLogOut}
+								className="highlighted cursor-pointer"
+							>
+								Log Out
+							</span>
+						) : (
+							<Link href="/login">Login</Link>
+						)}
 					</span>
 					<span className="text-brand-yellow mx-2">✦</span>
 					<div className="flex gap-3 items-center px-1">
