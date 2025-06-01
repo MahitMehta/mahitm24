@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
 import LoginForm from "./LoginForm";
+import { Suspense } from "react";
 
 export const revalidate = 3600;
 
@@ -23,7 +24,9 @@ const Login = () => {
 					Create a <span className="text-orange-500">FREE</span> account to
 					experiment with certain utilities.
 				</h2>
-				<LoginForm />
+				<Suspense>
+					<LoginForm />
+				</Suspense>
 				<Footer className="z-50 max-w-screen-md" />
 			</section>
 		</div>

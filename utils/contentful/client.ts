@@ -4,10 +4,9 @@ import * as contentful from "contentful";
 
 const getAccessToken = (isDraftModeEnabled: boolean): string => {
 	return process.env.NODE_ENV !== "production" || isDraftModeEnabled
-		? // biome-ignore lint/style/noNonNullAssertion: This is a required environment variable
-			process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN!
-		: // biome-ignore lint/style/noNonNullAssertion: This is a required environment variable
-			process.env.CONTENTFUL_ACCESS_TOKEN!;
+		? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN!
+		: process.env.CONTENTFUL_ACCESS_TOKEN ||
+				process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN!;
 };
 
 export async function getParentEntry(
@@ -19,13 +18,16 @@ export async function getParentEntry(
 	string
 > | null> {
 	const config = {
-		// biome-ignore lint/style/noNonNullAssertion: This is a required environment variable
 		space: process.env.CONTENTFUL_SPACE_ID!,
 		accessToken: getAccessToken(isDraftModeEnabled),
 		host: "cdn.contentful.com",
 	};
 
-	if (process.env.NODE_ENV !== "production" || isDraftModeEnabled) {
+	if (
+		process.env.NODE_ENV !== "production" ||
+		isDraftModeEnabled ||
+		!process.env.CONTENTFUL_ACCESS_TOKEN
+	) {
 		config.host = "preview.contentful.com";
 	}
 
