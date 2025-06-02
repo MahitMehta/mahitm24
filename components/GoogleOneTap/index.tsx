@@ -30,7 +30,6 @@ const GoogleOneTap = () => {
 		const initializeGoogleOneTap = () => {
 			window.addEventListener("load", async () => {
 				const [nonce, hashedNonce] = await generateNonce();
-				console.log("Nonce: ", nonce, hashedNonce);
 
 				// check if there's already an existing session before initializing the one-tap UI
 				const { data, error } = await supabase.auth.getSession();

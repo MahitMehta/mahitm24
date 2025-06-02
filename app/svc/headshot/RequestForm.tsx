@@ -6,7 +6,7 @@ import Card from "@/components/Card";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import { CogIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import HeadshotPreview from "./HeadshotPreview";
 import SplitFlapGroup from "@/components/SplitFlapCountdown/SplitFlapGroup";
 import { useAtomValue } from "jotai";
@@ -24,7 +24,7 @@ const RequestForm = () => {
 	const [generating, setGenerating] = useState(false);
 	const [gender, setGender] = useState<genderType | null>(null);
 	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
-	const [headshotUrls, setHeadshotUrls] = useState<string[]>(["ded"]);
+	const [headshotUrls, setHeadshotUrls] = useState<string[]>([]);
 	const [selectedHeadshotIndex, setSelectedHeadshotIndex] = useState<
 		number | null
 	>(null);
@@ -43,6 +43,8 @@ const RequestForm = () => {
 		const signedUrls = data?.map((item) => item.signedUrl);
 		setHeadshotUrls(signedUrls || []);
 		setSelectedHeadshotIndex(0); // Set to first headshot
+
+		setGenerating(false);
 	}, []);
 
 	const pollForResult = useCallback(
@@ -61,12 +63,14 @@ const RequestForm = () => {
 						}
 
 						clearInterval(pollInterval);
-						setGenerating(false);
 
 						if (result?.status === "success") {
 							console.debug("Generation successful", result.object_paths);
+							setSplitFlapDigits([1, 0, 0]);
 							getSignedImageUrls(result.object_paths);
 						} else if (result?.status === "error") {
+							setGenerating(false);
+							setSplitFlapDigits([0, 0]);
 							console.debug("Generation failed");
 						}
 					});
@@ -126,6 +130,8 @@ const RequestForm = () => {
 			return;
 		}
 
+		setHeadshotUrls([]);
+		setSelectedHeadshotIndex(null);
 		setGenerating(true);
 		const { data, error } = await supabase.auth.refreshSession();
 
@@ -168,6 +174,7 @@ const RequestForm = () => {
 			})
 			.catch((error) => {
 				setGenerating(false);
+				setSplitFlapDigits([0, 0]);
 				console.error("Error triggering inference:", error);
 			});
 	}, [inputImage, pollForResult, generating, gender, startProgessUpdates]);
@@ -238,6 +245,17 @@ const RequestForm = () => {
 		fetchQuota(user.id);
 	}, [user, quota, fetchQuota]);
 
+	const showCustomizationOptions = useMemo(() => {
+		return !generating && headshotUrls.length === 0;
+	}, [generating, headshotUrls.length]);
+
+	const handleGenerateAnother = useCallback(() => {
+		setInputImage(null);
+		setHeadshotUrls([]);
+		setSelectedHeadshotIndex(null);
+		setGender(null);
+	}, []);
+
 	return (
 		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
 			<Card className="!px-1 flex min-w-[240px] sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
@@ -252,7 +270,9 @@ const RequestForm = () => {
 						}`}
 					>
 						{inputImage ? (
-							<img
+							<motion.img
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
 								src={URL.createObjectURL(inputImage)}
 								alt="Uploaded"
 								className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
@@ -273,7 +293,9 @@ const RequestForm = () => {
 						/>
 					</div>
 				) : (
-					<img
+					<motion.img
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
 						src={headshotUrls[selectedHeadshotIndex]}
 						alt="AI Headshot"
 						className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
@@ -298,7 +320,9 @@ const RequestForm = () => {
 					<div
 						className={clsx(
 							"mt-3 ml-1 transition-opacity duration-300 absolute top-0",
-							generating ? "opacity-0 pointer-events-none" : "opacity-100",
+							showCustomizationOptions
+								? "opacity-100"
+								: "opacity-0 pointer-events-none",
 						)}
 					>
 						<div>
@@ -334,12 +358,21 @@ const RequestForm = () => {
 					<div
 						className={clsx(
 							"absolute top-2 flex gap-2",
-							!generating && "opacity-0 pointer-events-none",
+							showCustomizationOptions && "opacity-0 pointer-events-none",
 						)}
 					>
-						<HeadshotPreview index={0} />
-						<HeadshotPreview index={1} />
-						<HeadshotPreview index={2} />
+						{generating
+							? Array.from({ length: 3 }).map((_, index) => (
+									<HeadshotPreview key={index} index={index} count={3} />
+								))
+							: headshotUrls.map((url, index) => (
+									<HeadshotPreview
+										imageUrl={url}
+										key={index}
+										index={index}
+										count={headshotUrls.length}
+									/>
+								))}
 					</div>
 				</div>
 				<div className="mt-14 sm:mt-auto mb-3">
@@ -353,25 +386,31 @@ const RequestForm = () => {
 						</motion.p>
 					)}
 					<div className="flex gap-2 items-center">
-						<BrandBrownButton
-							disabled={!inputImage || !gender}
-							onClick={requestGeneration}
-							className={clsx(
-								"group gap-2",
-								generating && "cursor-not-allowed text-brand-yellow",
-							)}
-						>
-							<CogIcon
-								style={{ animationDuration: "3s" }}
+						{headshotUrls.length === 0 ? (
+							<BrandBrownButton
+								disabled={!inputImage || !gender}
+								onClick={requestGeneration}
 								className={clsx(
-									"w-6 h-6 group-hover:rotate-[25deg] transition-all duration-200 ease-linear",
-									generating ? "animate-spin" : "",
+									"group gap-2 w-[180px]",
+									generating && "cursor-not-allowed text-brand-yellow",
 								)}
-							/>
-							<span className="duration-200 transition-colors">
-								Generate for 1 coin
-							</span>
-						</BrandBrownButton>
+							>
+								<CogIcon
+									style={{ animationDuration: "3s" }}
+									className={clsx(
+										"w-6 h-6 group-hover:rotate-[25deg] transition-all duration-200 ease-linear",
+										generating ? "animate-spin" : "",
+									)}
+								/>
+								<span className="duration-200 transition-colors">
+									{generating ? "Generating..." : "Generate for 1 coin"}
+								</span>
+							</BrandBrownButton>
+						) : (
+							<BrandBrownButton onClick={handleGenerateAnother}>
+								Generator Another?
+							</BrandBrownButton>
+						)}
 						<div
 							className={clsx(
 								!generating && "opacity-0 pointer-events-none",
