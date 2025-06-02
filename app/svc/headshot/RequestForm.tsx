@@ -1,0 +1,402 @@
+"use client";
+
+import BrandBrownButton from "@/components/BrandBrownButton";
+import Select from "@/components/BrandBrownButton/Select";
+import Card from "@/components/Card";
+import { createSupabaseClient } from "@/utils/supabase/client";
+import { CogIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { useCallback, useEffect, useRef, useState } from "react";
+import HeadshotPreview from "./HeadshotPreview";
+import SplitFlapGroup from "@/components/SplitFlapCountdown/SplitFlapGroup";
+import { useAtomValue } from "jotai";
+import { userAtom } from "@/utils/atom";
+import { motion } from "framer-motion";
+
+const supabase = createSupabaseClient();
+
+const MODAL_API_URL = "https://mahitmehta--headshots-v11.modal.run";
+
+type genderType = "male" | "female" | "non-binary";
+
+const RequestForm = () => {
+	const [inputImage, setInputImage] = useState<File | null>(null);
+	const [generating, setGenerating] = useState(false);
+	const [gender, setGender] = useState<genderType | null>(null);
+	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
+	const [headshotUrls, setHeadshotUrls] = useState<string[]>(["ded"]);
+	const [selectedHeadshotIndex, setSelectedHeadshotIndex] = useState<
+		number | null
+	>(null);
+	const user = useAtomValue(userAtom);
+
+	const getSignedImageUrls = useCallback(async (objectPaths: string[]) => {
+		const { data, error } = await supabase.storage
+			.from("headshots")
+			.createSignedUrls(objectPaths, 60 * 60); // 1 hour expiration
+
+		if (error) {
+			console.error("Error getting signed URLs:", error);
+			return;
+		}
+
+		const signedUrls = data?.map((item) => item.signedUrl);
+		setHeadshotUrls(signedUrls || []);
+		setSelectedHeadshotIndex(0); // Set to first headshot
+	}, []);
+
+	const pollForResult = useCallback(
+		async (callId: string, jwt: string) => {
+			const pollInterval = setInterval(async () => {
+				fetch(`${MODAL_API_URL}/result/${callId}`, {
+					method: "GET",
+					headers: {
+						Authorization: `Bearer ${jwt}`,
+					},
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						if (result?.status === "pending") {
+							return; // Still pending, keep polling
+						}
+
+						clearInterval(pollInterval);
+						setGenerating(false);
+
+						if (result?.status === "success") {
+							console.debug("Generation successful", result.object_paths);
+							getSignedImageUrls(result.object_paths);
+						} else if (result?.status === "error") {
+							console.debug("Generation failed");
+						}
+					});
+			}, 1000);
+
+			setTimeout(async () => {
+				if (generating) {
+					console.debug("Timeout reached, stopping polling");
+				}
+
+				setGenerating(false);
+				clearInterval(pollInterval);
+			}, 120 * 1000); // Stop polling after 2 minutes
+		},
+		[generating, getSignedImageUrls],
+	);
+
+	const startProgessUpdates = useCallback(() => {
+		const interval = setInterval(() => {
+			setSplitFlapDigits((prevDigits) => {
+				let increment = 5;
+				const newDigits = [...prevDigits];
+				if (newDigits[0] >= 6) {
+					increment = 1;
+				}
+				// Increment the first digit, reset to 0 if it reaches 10
+				newDigits[1] = (newDigits[1] + increment) % 10;
+				// If the first digit rolls over, increment the second digit
+				if (newDigits[1] === 0) {
+					newDigits[0] = (newDigits[0] + 1) % 10;
+				}
+
+				if (newDigits[0] === 9 && newDigits[1] === 9) {
+					clearInterval(interval);
+				}
+
+				return newDigits;
+			});
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	const requestGeneration = useCallback(async () => {
+		if (generating) {
+			console.debug("Already generating, skipping request");
+			return;
+		}
+
+		if (gender === null) {
+			// No gender selected
+			return;
+		}
+
+		if (!inputImage) {
+			// No image selected
+			return;
+		}
+
+		setGenerating(true);
+		const { data, error } = await supabase.auth.refreshSession();
+
+		if (error) {
+			setGenerating(false);
+			console.error("Error getting session", error);
+			return;
+		}
+
+		const session = data.session;
+		const jwt = session?.access_token;
+
+		if (!jwt) {
+			setGenerating(false);
+			console.error("No JWT found in session");
+			return;
+		}
+
+		startProgessUpdates();
+
+		const formData = new FormData();
+		formData.append("file", inputImage);
+		formData.append("gender", gender);
+
+		fetch(`${MODAL_API_URL}/trigger-inference`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: formData,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.call_id) {
+					console.debug("Generation request successful");
+					setTimeout(() => {
+						pollForResult(data.call_id, jwt);
+					}, 15 * 1000); // Wait 15 seconds before starting to poll
+				}
+			})
+			.catch((error) => {
+				setGenerating(false);
+				console.error("Error triggering inference:", error);
+			});
+	}, [inputImage, pollForResult, generating, gender, startProgessUpdates]);
+
+	const handleFileUpload = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const file = event.target.files?.[0];
+
+			if (!file) {
+				console.debug("No file selected");
+				return;
+			}
+
+			setInputImage(file);
+		},
+		[],
+	);
+
+	const imageInputRef = useRef<HTMLInputElement>(null);
+	const [isDragging, setIsDragging] = useState(false);
+
+	const handleDragOver = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragging(true);
+	};
+
+	const handleDragLeave = () => {
+		setIsDragging(false);
+	};
+
+	const handleDrop = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragging(false);
+		if (e.dataTransfer.files?.[0]) {
+			setInputImage(e.dataTransfer.files[0]);
+		}
+	}, []);
+
+	const handleClick = () => {
+		imageInputRef.current?.click();
+	};
+
+	const [quota, setQuota] = useState<number | null>(null);
+
+	const fetchQuota = useCallback(async (userId: string) => {
+		const { data, error } = await supabase
+			.from("headshots_config")
+			.select("quota")
+			.eq("user_id", userId);
+
+		if (error) {
+			console.error("Error fetching quota:", error);
+			return;
+		}
+
+		if (data.length === 0) {
+			await supabase.from("headshots_config").insert({ user_id: userId });
+			setQuota(5);
+		} else {
+			setQuota(data[0].quota);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!user) return;
+		if (quota !== null) return;
+
+		fetchQuota(user.id);
+	}, [user, quota, fetchQuota]);
+
+	return (
+		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
+			<Card className="!px-1 flex min-w-[240px] sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
+				{selectedHeadshotIndex === null ? (
+					<div
+						onDragOver={handleDragOver}
+						onDragLeave={handleDragLeave}
+						onDrop={handleDrop}
+						onClick={handleClick}
+						className={`w-full h-full flex justify-center items-center text-center cursor-pointer transition ${
+							isDragging ? "opacity-50" : "opacity-100"
+						}`}
+					>
+						{inputImage ? (
+							<img
+								src={URL.createObjectURL(inputImage)}
+								alt="Uploaded"
+								className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
+							/>
+						) : (
+							<p className="text-gray-600">
+								Drag and Drop an Image
+								<br />
+								or Click to Browse
+							</p>
+						)}
+						<input
+							ref={imageInputRef}
+							type="file"
+							accept="image/jpeg"
+							className="hidden"
+							onChange={handleFileUpload}
+						/>
+					</div>
+				) : (
+					<img
+						src={headshotUrls[selectedHeadshotIndex]}
+						alt="AI Headshot"
+						className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
+					/>
+				)}
+			</Card>
+			<Card className="w-full min-h-[360px] flex flex-col">
+				<h1 style={{ lineHeight: 1.0 }} className="text-2xl">
+					Generation Config
+				</h1>
+				<div className="flex">
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href="https://huggingface.co/mahitm/mahitm-headshots-v1"
+						className="ml-1 text-gray-600 hover:underline"
+					>
+						Model = mahitm-headshots-v1.1
+					</a>
+				</div>
+				<div className="relative min-h-[100px]">
+					<div
+						className={clsx(
+							"mt-3 ml-1 transition-opacity duration-300 absolute top-0",
+							generating ? "opacity-0 pointer-events-none" : "opacity-100",
+						)}
+					>
+						<div>
+							<p>1. Select Gender</p>
+							<div className="flex gap-2">
+								<Select
+									id={"male"}
+									selectedId={gender}
+									onSelect={setGender}
+									className="w-[125px]"
+								>
+									<span className="font-bold mr-1">♂</span>Male
+								</Select>
+								<Select
+									id={"female"}
+									selectedId={gender}
+									onSelect={setGender}
+									className="w-[125px]"
+								>
+									<span className="font-bold mr-1">♀</span> Female
+								</Select>
+								<Select
+									id={"non-binary"}
+									selectedId={gender}
+									onSelect={setGender}
+									className="w-[125px]"
+								>
+									<span className="font-bold mr-1">🜬</span>Non-binary
+								</Select>
+							</div>
+						</div>
+					</div>
+					<div
+						className={clsx(
+							"absolute top-2 flex gap-2",
+							!generating && "opacity-0 pointer-events-none",
+						)}
+					>
+						<HeadshotPreview index={0} />
+						<HeadshotPreview index={1} />
+						<HeadshotPreview index={2} />
+					</div>
+				</div>
+				<div className="mt-14 sm:mt-auto mb-3">
+					{quota && (
+						<motion.p
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							className="ml-1 text-gray-600"
+						>
+							{quota}/{quota} weekly coins remaining.
+						</motion.p>
+					)}
+					<div className="flex gap-2 items-center">
+						<BrandBrownButton
+							disabled={!inputImage || !gender}
+							onClick={requestGeneration}
+							className={clsx(
+								"group gap-2",
+								generating && "cursor-not-allowed text-brand-yellow",
+							)}
+						>
+							<CogIcon
+								style={{ animationDuration: "3s" }}
+								className={clsx(
+									"w-6 h-6 group-hover:rotate-[25deg] transition-all duration-200 ease-linear",
+									generating ? "animate-spin" : "",
+								)}
+							/>
+							<span className="duration-200 transition-colors">
+								Generate for 1 coin
+							</span>
+						</BrandBrownButton>
+						<div
+							className={clsx(
+								!generating && "opacity-0 pointer-events-none",
+								"flex",
+							)}
+						>
+							<SplitFlapGroup
+								digits={splitFlapDigits}
+								label=""
+								fontSize={36}
+								gap={2}
+								width={16}
+								backgroundColor={"#0E1417"}
+							/>
+							<span>%</span>
+						</div>
+					</div>
+				</div>
+				<p>
+					Note: All images <span className="text-red-500">are deleted</span>{" "}
+					upon refresh of page.
+				</p>
+			</Card>
+		</div>
+	);
+};
+
+export default RequestForm;

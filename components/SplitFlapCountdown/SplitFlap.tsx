@@ -5,6 +5,7 @@ interface ISplitFlapProps {
 	fontSize: number;
 	width: number;
 	gap: number;
+	backgroundColor?: string;
 }
 
 const SplitFlap: React.FC<ISplitFlapProps> = ({
@@ -12,6 +13,7 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 	fontSize,
 	width,
 	gap,
+	backgroundColor = "black",
 }) => {
 	const [prevValue, setPrevValue] = useState<number>(0);
 	const [currentValue, setCurrentValue] = useState<number>(0);
@@ -61,8 +63,9 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 					style={{
 						lineHeight: 1,
 						fontSize,
+						background: backgroundColor,
 					}}
-					className="h-[0.5em] overflow-hidden bg-black inline-block"
+					className="h-[0.5em] overflow-hidden inline-block"
 				>
 					{currentValue}
 				</span>
@@ -72,8 +75,9 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 					transformStyle: "preserve-3d",
 					willChange: "transform",
 					height: halfHeight,
+					background: backgroundColor,
 				}}
-				className="absolute bg-black w-full"
+				className="absolute w-full"
 				ref={flipRef}
 			>
 				<span
@@ -81,8 +85,9 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 						height: halfHeightGap,
 						transform: `translateY(-${gap * 2}px) rotateX(180deg)`,
 						backfaceVisibility: "hidden",
+						background: backgroundColor,
 					}}
-					className="overflow-hidden bg-black absolute inline-block"
+					className="overflow-hidden absolute inline-block"
 				>
 					<span
 						style={{ lineHeight: 1, fontSize, color: "#d2d2d2" }}
@@ -96,8 +101,9 @@ const SplitFlap: React.FC<ISplitFlapProps> = ({
 						lineHeight: 1,
 						backfaceVisibility: "hidden",
 						fontSize,
+						background: backgroundColor,
 					}}
-					className="absolute h-[0.5em] overflow-hidden bg-black inline-block"
+					className="absolute h-[0.5em] overflow-hidden inline-block"
 				>
 					{prevValue}
 				</span>
