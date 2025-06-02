@@ -6,6 +6,7 @@ interface ISplitFlapGroupProps {
 	fontSize: number;
 	gap: number;
 	width: number;
+	backgroundColor?: string;
 }
 
 const SplitFlapGroup: React.FC<ISplitFlapGroupProps> = ({
@@ -14,6 +15,7 @@ const SplitFlapGroup: React.FC<ISplitFlapGroupProps> = ({
 	fontSize,
 	gap,
 	width,
+	backgroundColor = "black",
 }) => {
 	return (
 		<div className="flex flex-col items-center">
@@ -23,10 +25,11 @@ const SplitFlapGroup: React.FC<ISplitFlapGroupProps> = ({
 						<SplitFlap
 							fontSize={fontSize}
 							width={width}
-							gap={gap}
+							gap={2}
 							// biome-ignore lint/suspicious/noArrayIndexKey: Digit count is fixed
 							key={index}
 							value={value}
+							backgroundColor={backgroundColor}
 						/>
 					);
 				})}
