@@ -30,7 +30,7 @@ const RequestForm = () => {
 	>(null);
 	const user = useAtomValue(userAtom);
 
-	const getSignedImageUrls = useCallback(async (objectPaths: string[]) => {
+	const fetchSignedImageUrls = useCallback(async (objectPaths: string[]) => {
 		const { data, error } = await supabase.storage
 			.from("headshots")
 			.createSignedUrls(objectPaths, 60 * 60); // 1 hour expiration
@@ -48,14 +48,17 @@ const RequestForm = () => {
 	}, []);
 
 	const pollForResult = useCallback(
-		async (callId: string, jwt: string) => {
+		async (callId: string, requestId: string, userId: string, jwt: string) => {
 			const pollInterval = setInterval(async () => {
-				fetch(`${MODAL_API_URL}/result/${callId}`, {
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${jwt}`,
+				fetch(
+					`${MODAL_API_URL}/result?call_id=${callId}&request_id=${requestId}`,
+					{
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${jwt}`,
+						},
 					},
-				})
+				)
 					.then((res) => res.json())
 					.then((result) => {
 						if (result?.status === "pending") {
@@ -67,7 +70,8 @@ const RequestForm = () => {
 						if (result?.status === "success") {
 							console.debug("Generation successful", result.object_paths);
 							setSplitFlapDigits([1, 0, 0]);
-							getSignedImageUrls(result.object_paths);
+							fetchQuotaUsed(userId);
+							fetchSignedImageUrls(result.object_paths);
 						} else if (result?.status === "error") {
 							setGenerating(false);
 							setSplitFlapDigits([0, 0]);
@@ -85,7 +89,7 @@ const RequestForm = () => {
 				clearInterval(pollInterval);
 			}, 120 * 1000); // Stop polling after 2 minutes
 		},
-		[generating, getSignedImageUrls],
+		[generating, fetchSignedImageUrls],
 	);
 
 	const startProgessUpdates = useCallback(() => {
@@ -133,7 +137,8 @@ const RequestForm = () => {
 		setHeadshotUrls([]);
 		setSelectedHeadshotIndex(null);
 		setGenerating(true);
-		const { data, error } = await supabase.auth.refreshSession();
+		const { data: sessionResponse, error } =
+			await supabase.auth.refreshSession();
 
 		if (error) {
 			setGenerating(false);
@@ -141,14 +146,15 @@ const RequestForm = () => {
 			return;
 		}
 
-		const session = data.session;
+		const session = sessionResponse.session;
 		const jwt = session?.access_token;
 
-		if (!jwt) {
+		if (!jwt || !sessionResponse.user) {
 			setGenerating(false);
 			console.error("No JWT found in session");
 			return;
 		}
+		const user_id = sessionResponse.user.id;
 
 		startProgessUpdates();
 
@@ -165,10 +171,10 @@ const RequestForm = () => {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				if (data.call_id) {
+				if (data.call_id && data.request_id) {
 					console.debug("Generation request successful");
 					setTimeout(() => {
-						pollForResult(data.call_id, jwt);
+						pollForResult(data.call_id, data.request_id, user_id, jwt);
 					}, 15 * 1000); // Wait 15 seconds before starting to poll
 				}
 			})
@@ -245,6 +251,46 @@ const RequestForm = () => {
 		fetchQuota(user.id);
 	}, [user, quota, fetchQuota]);
 
+	const getMostRecentSunday = useCallback(() => {
+		const now = new Date();
+		// 0 = Sunday
+		const day = now.getDay();
+		// How many days since last Sunday
+		const diff = day === 0 ? 0 : day;
+		now.setDate(now.getDate() - diff);
+		// Set to start of day
+		now.setHours(0, 0, 0, 0);
+		return now.toISOString();
+	}, []);
+
+	const [quotaUsed, setQuotaUsed] = useState<number | null>(null);
+
+	const fetchQuotaUsed = useCallback(
+		async (userId: string) => {
+			const fromDate = getMostRecentSunday();
+			const { data } = await supabase
+				.from("headshots")
+				.select("cost")
+				.eq("user_id", userId)
+				.neq("status", "error")
+				.gte("created_at", fromDate);
+
+			if (!data) {
+				console.error("Error fetching quota used");
+				return;
+			}
+
+			const totalUsed = data.reduce((acc, item) => acc + (item.cost || 0), 0);
+			setQuotaUsed(totalUsed);
+		},
+		[getMostRecentSunday],
+	);
+
+	useEffect(() => {
+		if (quotaUsed !== null || !user) return;
+		fetchQuotaUsed(user.id);
+	}, [fetchQuotaUsed, user, quotaUsed]);
+
 	const showCustomizationOptions = useMemo(() => {
 		return !generating && headshotUrls.length === 0;
 	}, [generating, headshotUrls.length]);
@@ -255,6 +301,15 @@ const RequestForm = () => {
 		setSelectedHeadshotIndex(null);
 		setGender(null);
 	}, []);
+
+	const remainingQuota = useMemo(() => {
+		if (quota === null || quotaUsed === null) return null;
+		return quota - quotaUsed;
+	}, [quota, quotaUsed]);
+
+	const inputImageURL = useMemo(() => {
+		return inputImage ? URL.createObjectURL(inputImage) : null;
+	}, [inputImage]);
 
 	return (
 		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
@@ -269,11 +324,11 @@ const RequestForm = () => {
 							isDragging ? "opacity-50" : "opacity-100"
 						}`}
 					>
-						{inputImage ? (
+						{inputImageURL ? (
 							<motion.img
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								src={URL.createObjectURL(inputImage)}
+								src={inputImageURL}
 								alt="Uploaded"
 								className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
 							/>
@@ -376,13 +431,13 @@ const RequestForm = () => {
 					</div>
 				</div>
 				<div className="mt-14 sm:mt-auto mb-3">
-					{quota && (
+					{quota !== null && remainingQuota !== null && (
 						<motion.p
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							className="ml-1 text-gray-600"
 						>
-							{quota}/{quota} weekly coins remaining.
+							{remainingQuota}/{quota} weekly coins remaining.
 						</motion.p>
 					)}
 					<div className="flex gap-2 items-center">
