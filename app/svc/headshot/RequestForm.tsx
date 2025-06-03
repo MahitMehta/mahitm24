@@ -12,6 +12,7 @@ import SplitFlapGroup from "@/components/SplitFlapCountdown/SplitFlapGroup";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/utils/atom";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const supabase = createSupabaseClient();
 
@@ -23,12 +24,17 @@ const RequestForm = () => {
 	const [inputImage, setInputImage] = useState<File | null>(null);
 	const [generating, setGenerating] = useState(false);
 	const [gender, setGender] = useState<genderType | null>(null);
-	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
 	const [headshotUrls, setHeadshotUrls] = useState<string[]>([]);
 	const [selectedHeadshotIndex, setSelectedHeadshotIndex] = useState<
 		number | null
 	>(null);
 	const user = useAtomValue(userAtom);
+
+	const [errorMessage, setErrorMessage] = useState<string>("");
+
+	const splitFlapIntervalRef = useRef<NodeJS.Timeout | null>(null);
+	const splitFlapDigitsRef = useRef<number[]>([0, 0]);
+	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
 
 	const fetchSignedImageUrls = useCallback(async (objectPaths: string[]) => {
 		const { data, error } = await supabase.storage
@@ -48,101 +54,128 @@ const RequestForm = () => {
 	}, []);
 
 	const pollForResult = useCallback(
-		async (callId: string, requestId: string, userId: string, jwt: string) => {
-			const pollInterval = setInterval(async () => {
-				fetch(
-					`${MODAL_API_URL}/result?call_id=${callId}&request_id=${requestId}`,
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${jwt}`,
-						},
+		async (
+			callId: string,
+			requestId: string,
+			userId: string,
+			jwt: string,
+			pollCount = 0,
+		) => {
+			fetch(
+				`${MODAL_API_URL}/result?call_id=${callId}&request_id=${requestId}`,
+				{
+					method: "GET",
+					headers: {
+						Authorization: `Bearer ${jwt}`,
 					},
-				)
-					.then((res) => res.json())
-					.then((result) => {
-						if (result?.status === "pending") {
-							return; // Still pending, keep polling
+				},
+			)
+				.then((res) => res.json())
+				.then((result) => {
+					if (result?.status === "pending") {
+						// Still pending, keep polling
+						if (pollCount >= 90) {
+							splitFlapIntervalRef.current &&
+								clearInterval(splitFlapIntervalRef.current);
+							setErrorMessage("Generation timed out. Please try again.");
+						} else {
+							setTimeout(
+								() =>
+									pollForResult(callId, requestId, userId, jwt, pollCount + 1),
+								1000,
+							); // Poll every 1 seconds
 						}
-
-						clearInterval(pollInterval);
-
-						if (result?.status === "success") {
-							console.debug("Generation successful", result.object_paths);
-							setSplitFlapDigits([1, 0, 0]);
-							fetchQuotaUsed(userId);
-							fetchSignedImageUrls(result.object_paths);
-						} else if (result?.status === "error") {
-							setGenerating(false);
-							setSplitFlapDigits([0, 0]);
-							console.debug("Generation failed");
-						}
-					});
-			}, 1000);
-
-			setTimeout(async () => {
-				if (generating) {
-					console.debug("Timeout reached, stopping polling");
-				}
-
-				setGenerating(false);
-				clearInterval(pollInterval);
-			}, 120 * 1000); // Stop polling after 2 minutes
+					} else if (result?.status === "success") {
+						console.debug("Generation successful", result.object_paths);
+						splitFlapIntervalRef.current &&
+							clearInterval(splitFlapIntervalRef.current);
+						splitFlapDigitsRef.current = [1, 0, 0];
+						setSplitFlapDigits([1, 0, 0]);
+						fetchQuotaUsed(userId);
+						fetchSignedImageUrls(result.object_paths);
+					} else if (result?.status === "error") {
+						splitFlapIntervalRef.current &&
+							clearInterval(splitFlapIntervalRef.current);
+						setGenerating(false);
+						splitFlapDigitsRef.current = [0, 0];
+						setSplitFlapDigits([0, 0]);
+						console.debug("Generation failed");
+						setErrorMessage("Generation failed. Please try again.");
+					}
+				})
+				.catch((error) => {
+					console.error("Error fetching result:", error);
+					setGenerating(false);
+					splitFlapDigitsRef.current = [0, 0];
+					setSplitFlapDigits([0, 0]);
+					setErrorMessage(
+						"Error fetching generation result. Please try again.",
+					);
+				});
 		},
-		[generating, fetchSignedImageUrls],
+		[fetchSignedImageUrls],
 	);
 
 	const startProgessUpdates = useCallback(() => {
-		const interval = setInterval(() => {
-			setSplitFlapDigits((prevDigits) => {
-				let increment = 5;
-				const newDigits = [...prevDigits];
-				if (newDigits[0] >= 6) {
-					increment = 1;
-				}
-				// Increment the first digit, reset to 0 if it reaches 10
-				newDigits[1] = (newDigits[1] + increment) % 10;
-				// If the first digit rolls over, increment the second digit
-				if (newDigits[1] === 0) {
-					newDigits[0] = (newDigits[0] + 1) % 10;
-				}
+		splitFlapIntervalRef.current = setInterval(() => {
+			// don't update if at 100 (3 digits)
+			if (splitFlapDigitsRef.current.length === 3) {
+				return;
+			}
 
-				if (newDigits[0] === 9 && newDigits[1] === 9) {
-					clearInterval(interval);
-				}
+			let increment = 5;
+			const newDigits = [...splitFlapDigitsRef.current];
+			if (newDigits[0] >= 5) {
+				increment = 1;
+			}
+			// Increment the first digit, reset to 0 if it reaches 10
+			newDigits[1] = (newDigits[1] + increment) % 10;
+			// If the first digit rolls over, increment the second digit
+			if (newDigits[1] === 0) {
+				newDigits[0] = (newDigits[0] + 1) % 10;
+			}
 
-				return newDigits;
-			});
+			if (newDigits[0] === 9 && newDigits[1] === 9) {
+				splitFlapIntervalRef.current &&
+					clearInterval(splitFlapIntervalRef.current);
+			}
+
+			splitFlapDigitsRef.current = newDigits; // Update the ref to keep track of the current digits
+			setSplitFlapDigits(newDigits);
 		}, 1000);
-
-		return () => clearInterval(interval);
 	}, []);
 
+	const router = useRouter();
+
 	const requestGeneration = useCallback(async () => {
+		setSplitFlapDigits([0, 0]); // Reset split flap digits
+		setErrorMessage(""); // Clear any previous error messages
+
 		if (generating) {
-			console.debug("Already generating, skipping request");
+			setErrorMessage("Already generating. Please wait.");
 			return;
 		}
 
 		if (gender === null) {
-			// No gender selected
+			setErrorMessage("Please select a gender.");
 			return;
 		}
 
 		if (!inputImage) {
-			// No image selected
+			setErrorMessage("Please upload an image before generating.");
 			return;
 		}
 
 		setHeadshotUrls([]);
 		setSelectedHeadshotIndex(null);
 		setGenerating(true);
+
 		const { data: sessionResponse, error } =
 			await supabase.auth.refreshSession();
 
 		if (error) {
 			setGenerating(false);
-			console.error("Error getting session", error);
+			router.push(`/login?next=${window.location.pathname}`);
 			return;
 		}
 
@@ -151,11 +184,13 @@ const RequestForm = () => {
 
 		if (!jwt || !sessionResponse.user) {
 			setGenerating(false);
-			console.error("No JWT found in session");
+			// No JWT or user, redirect to login
+			router.push(`/login?next=${window.location.pathname}`);
 			return;
 		}
 		const user_id = sessionResponse.user.id;
 
+		splitFlapDigitsRef.current = [0, 0];
 		startProgessUpdates();
 
 		const formData = new FormData();
@@ -175,15 +210,26 @@ const RequestForm = () => {
 					console.debug("Generation request successful");
 					setTimeout(() => {
 						pollForResult(data.call_id, data.request_id, user_id, jwt);
-					}, 15 * 1000); // Wait 15 seconds before starting to poll
+					}, 20 * 1000); // Wait 20 seconds before starting to poll
 				}
 			})
 			.catch((error) => {
 				setGenerating(false);
+				splitFlapIntervalRef.current &&
+					clearInterval(splitFlapIntervalRef.current);
+				splitFlapDigitsRef.current = [0, 0];
 				setSplitFlapDigits([0, 0]);
-				console.error("Error triggering inference:", error);
+				console.error("Error starting generation:", error);
+				setErrorMessage("Error starting generation. Please try again.");
 			});
-	}, [inputImage, pollForResult, generating, gender, startProgessUpdates]);
+	}, [
+		inputImage,
+		pollForResult,
+		generating,
+		gender,
+		startProgessUpdates,
+		router,
+	]);
 
 	const handleFileUpload = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,6 +237,7 @@ const RequestForm = () => {
 
 			if (!file) {
 				console.debug("No file selected");
+				setErrorMessage("Please select a valid image file.");
 				return;
 			}
 
@@ -310,6 +357,10 @@ const RequestForm = () => {
 	const inputImageURL = useMemo(() => {
 		return inputImage ? URL.createObjectURL(inputImage) : null;
 	}, [inputImage]);
+
+	const outOfCoins = useMemo(() => {
+		return remainingQuota !== null && remainingQuota <= 0;
+	}, [remainingQuota]);
 
 	return (
 		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
@@ -431,11 +482,24 @@ const RequestForm = () => {
 					</div>
 				</div>
 				<div className="mt-14 sm:mt-auto mb-3">
+					{errorMessage && (
+						<motion.p
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							style={{ lineHeight: 1.0 }}
+							className="text-red-500 ml-1"
+						>
+							{errorMessage}
+						</motion.p>
+					)}
 					{quota !== null && remainingQuota !== null && (
 						<motion.p
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
-							className="ml-1 text-gray-600"
+							className={clsx(
+								"ml-1",
+								outOfCoins ? "text-red-500" : "text-gray-600",
+							)}
 						>
 							{remainingQuota}/{quota} weekly coins remaining.
 						</motion.p>
@@ -443,7 +507,7 @@ const RequestForm = () => {
 					<div className="flex gap-2 items-center">
 						{headshotUrls.length === 0 ? (
 							<BrandBrownButton
-								disabled={!inputImage || !gender}
+								disabled={!inputImage || outOfCoins || !gender}
 								onClick={requestGeneration}
 								className={clsx(
 									"group gap-2 w-[180px]",

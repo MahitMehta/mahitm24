@@ -15,10 +15,8 @@ const BrandBrownButton: React.FC<IBrandBrownButtonProps> = ({
 	disabled = false,
 }) => {
 	const handleClick = useCallback(() => {
-		if (!disabled) {
-			onClick();
-		}
-	}, [onClick, disabled]);
+		onClick();
+	}, [onClick]);
 
 	return (
 		<button
