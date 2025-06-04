@@ -227,13 +227,20 @@ const LoginForm = () => {
 			<p style={{ lineHeight: 1.0 }} className="text-center">
 				By proceeding, I agree to the{" "}
 				<Link
+					target="_blank"
+					rel="noopener noreferrer"
 					className="text-brand-yellow hover:underline"
 					href="terms-and-conditions"
 				>
 					Terms and Conditions
 				</Link>{" "}
 				+{" "}
-				<Link className="text-brand-yellow hover:underline" href="privacy">
+				<Link
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-brand-yellow hover:underline"
+					href="privacy"
+				>
 					Privacy Policy
 				</Link>
 				.
