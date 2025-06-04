@@ -8,8 +8,6 @@ import Card from "@/components/Card";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/utils/atom";
 import GoogleOneTap from "@/components/GoogleOneTap";
 
 import { motion } from "framer-motion";
@@ -22,16 +20,23 @@ const supabase = createSupabaseClient();
 
 const LoginForm = () => {
 	const searchParams = useSearchParams();
-
-	const user = useAtomValue(userAtom);
 	const router = useRouter();
 
-	useEffect(() => {
+	const canGoNext = useCallback(async () => {
+		const { data, error } = await supabase.auth.getSession();
+		if (error || !data.session) {
+			return;
+		}
+
 		const next = searchParams?.get("next");
-		if (user && next) {
+		if (next) {
 			router.replace(next);
 		}
-	}, [user, searchParams, router]);
+	}, [router, searchParams]);
+
+	useEffect(() => {
+		canGoNext();
+	}, [canGoNext]);
 
 	const redirectTo = useMemo(() => {
 		const origin = window.location.origin;
