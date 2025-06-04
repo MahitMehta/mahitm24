@@ -6,7 +6,7 @@ import type { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 
-const GoogleOneTap = () => {
+const GoogleOneTap = ({ redirectTo }: { redirectTo: string }) => {
 	const supabase = createSupabaseClient();
 	const router = useRouter();
 
@@ -37,7 +37,6 @@ const GoogleOneTap = () => {
 					console.error("Error getting session", error);
 				}
 				if (data.session) {
-					router.push("/");
 					return;
 				}
 
@@ -57,7 +56,7 @@ const GoogleOneTap = () => {
 							if (error) throw error;
 
 							// redirect to protected page
-							router.push("/");
+							router.push(redirectTo);
 						} catch (error) {
 							console.error("Error logging in with Google One Tap", error);
 						}
@@ -72,7 +71,7 @@ const GoogleOneTap = () => {
 		};
 		initializeGoogleOneTap();
 		return () => window.removeEventListener("load", initializeGoogleOneTap);
-	}, [generateNonce, router, supabase.auth]);
+	}, [generateNonce, router, supabase.auth, redirectTo]);
 
 	return (
 		<>

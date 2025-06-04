@@ -101,7 +101,7 @@ const LoginForm = () => {
 
 	return (
 		<Card className="my-3 py-3 w-full flex flex-col items-center gap-3 overflow-hidden">
-			<GoogleOneTap />
+			<GoogleOneTap redirectTo={redirectTo} />
 			<div className="h-[180px] w-full relative">
 				<motion.div
 					initial={{ opacity: 0, y: -40 }}
