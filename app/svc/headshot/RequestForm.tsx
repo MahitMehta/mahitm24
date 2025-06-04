@@ -87,10 +87,7 @@ const RequestForm = () => {
 						}
 					} else if (result?.status === "success") {
 						console.debug("Generation successful", result.object_paths);
-						splitFlapIntervalRef.current &&
-							clearInterval(splitFlapIntervalRef.current);
-						splitFlapDigitsRef.current = [1, 0, 0];
-						setSplitFlapDigits([1, 0, 0]);
+						splitFlapDigitsRef.current = [0, 0, 1];
 						fetchQuotaUsed(userId);
 						fetchSignedImageUrls(result.object_paths);
 					} else if (result?.status === "error") {
@@ -118,14 +115,18 @@ const RequestForm = () => {
 
 	const startProgessUpdates = useCallback(() => {
 		splitFlapIntervalRef.current = setInterval(() => {
-			// don't update if at 100 (3 digits)
+			// don't update if at 100 (or 3 digits)
 			if (splitFlapDigitsRef.current.length === 3) {
+				setSplitFlapDigits(splitFlapDigitsRef.current);
+				splitFlapIntervalRef.current &&
+					clearInterval(splitFlapIntervalRef.current);
+				splitFlapDigitsRef.current = [0, 0]; // Reset digits
 				return;
 			}
 
 			let increment = 5;
 			const newDigits = [...splitFlapDigitsRef.current];
-			if (newDigits[0] >= 5) {
+			if (newDigits[0] >= 4) {
 				increment = 1;
 			}
 			// Increment the first digit, reset to 0 if it reaches 10
@@ -210,7 +211,7 @@ const RequestForm = () => {
 					console.debug("Generation request successful");
 					setTimeout(() => {
 						pollForResult(data.call_id, data.request_id, user_id, jwt);
-					}, 20 * 1000); // Wait 20 seconds before starting to poll
+					}, 15 * 1000); // Wait 15 seconds before starting to poll
 				}
 			})
 			.catch((error) => {
