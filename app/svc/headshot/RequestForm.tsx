@@ -148,9 +148,88 @@ const RequestForm = () => {
 
 	const router = useRouter();
 
+	const [quota, setQuota] = useState<number | null>(null);
+
+	const fetchQuota = useCallback(async (userId: string) => {
+		const { data, error } = await supabase
+			.from("headshots_config")
+			.select("quota")
+			.eq("user_id", userId);
+
+		if (error) {
+			console.error("Error fetching quota:", error);
+			return;
+		}
+
+		if (data.length === 0) {
+			await supabase.from("headshots_config").insert({ user_id: userId });
+			setQuota(5);
+		} else {
+			setQuota(data[0].quota);
+		}
+	}, []);
+
+	const getMostRecentSunday = useCallback(() => {
+		const now = new Date();
+		// 0 = Sunday
+		const day = now.getDay();
+		// How many days since last Sunday
+		const diff = day === 0 ? 0 : day;
+		now.setDate(now.getDate() - diff);
+		// Set to start of day
+		now.setHours(0, 0, 0, 0);
+		return now.toISOString();
+	}, []);
+
+	const [quotaUsed, setQuotaUsed] = useState<number | null>(null);
+
+	const fetchQuotaUsed = useCallback(
+		async (userId: string) => {
+			const fromDate = getMostRecentSunday();
+			const { data } = await supabase
+				.from("headshots")
+				.select("cost")
+				.eq("user_id", userId)
+				.neq("status", "error")
+				.gte("created_at", fromDate);
+
+			if (!data) {
+				console.error("Error fetching quota used");
+				return;
+			}
+
+			const totalUsed = data.reduce((acc, item) => acc + (item.cost || 0), 0);
+			setQuotaUsed(totalUsed);
+		},
+		[getMostRecentSunday],
+	);
+
+	useEffect(() => {
+		if (quotaUsed !== null || !user) return;
+		fetchQuotaUsed(user.id);
+	}, [fetchQuotaUsed, user, quotaUsed]);
+
+	const remainingQuota = useMemo(() => {
+		if (quota === null || quotaUsed === null) return null;
+		return quota - quotaUsed;
+	}, [quota, quotaUsed]);
+
+	const inputImageURL = useMemo(() => {
+		return inputImage ? URL.createObjectURL(inputImage) : null;
+	}, [inputImage]);
+
+	const outOfCoins = useMemo(() => {
+		return remainingQuota !== null && remainingQuota <= 0;
+	}, [remainingQuota]);
+
 	const requestGeneration = useCallback(async () => {
 		setSplitFlapDigits([0, 0]); // Reset split flap digits
 		setErrorMessage(""); // Clear any previous error messages
+
+		if (outOfCoins) {
+			setErrorMessage("You are out of coins.");
+			return;
+		}
 
 		if (generating) {
 			setErrorMessage("Already generating. Please wait.");
@@ -230,6 +309,7 @@ const RequestForm = () => {
 		gender,
 		startProgessUpdates,
 		router,
+		outOfCoins,
 	]);
 
 	const handleFileUpload = useCallback(
@@ -271,73 +351,12 @@ const RequestForm = () => {
 		imageInputRef.current?.click();
 	};
 
-	const [quota, setQuota] = useState<number | null>(null);
-
-	const fetchQuota = useCallback(async (userId: string) => {
-		const { data, error } = await supabase
-			.from("headshots_config")
-			.select("quota")
-			.eq("user_id", userId);
-
-		if (error) {
-			console.error("Error fetching quota:", error);
-			return;
-		}
-
-		if (data.length === 0) {
-			await supabase.from("headshots_config").insert({ user_id: userId });
-			setQuota(5);
-		} else {
-			setQuota(data[0].quota);
-		}
-	}, []);
-
 	useEffect(() => {
 		if (!user) return;
 		if (quota !== null) return;
 
 		fetchQuota(user.id);
 	}, [user, quota, fetchQuota]);
-
-	const getMostRecentSunday = useCallback(() => {
-		const now = new Date();
-		// 0 = Sunday
-		const day = now.getDay();
-		// How many days since last Sunday
-		const diff = day === 0 ? 0 : day;
-		now.setDate(now.getDate() - diff);
-		// Set to start of day
-		now.setHours(0, 0, 0, 0);
-		return now.toISOString();
-	}, []);
-
-	const [quotaUsed, setQuotaUsed] = useState<number | null>(null);
-
-	const fetchQuotaUsed = useCallback(
-		async (userId: string) => {
-			const fromDate = getMostRecentSunday();
-			const { data } = await supabase
-				.from("headshots")
-				.select("cost")
-				.eq("user_id", userId)
-				.neq("status", "error")
-				.gte("created_at", fromDate);
-
-			if (!data) {
-				console.error("Error fetching quota used");
-				return;
-			}
-
-			const totalUsed = data.reduce((acc, item) => acc + (item.cost || 0), 0);
-			setQuotaUsed(totalUsed);
-		},
-		[getMostRecentSunday],
-	);
-
-	useEffect(() => {
-		if (quotaUsed !== null || !user) return;
-		fetchQuotaUsed(user.id);
-	}, [fetchQuotaUsed, user, quotaUsed]);
 
 	const showCustomizationOptions = useMemo(() => {
 		return !generating && headshotUrls.length === 0;
@@ -349,19 +368,6 @@ const RequestForm = () => {
 		setSelectedHeadshotIndex(null);
 		setGender(null);
 	}, []);
-
-	const remainingQuota = useMemo(() => {
-		if (quota === null || quotaUsed === null) return null;
-		return quota - quotaUsed;
-	}, [quota, quotaUsed]);
-
-	const inputImageURL = useMemo(() => {
-		return inputImage ? URL.createObjectURL(inputImage) : null;
-	}, [inputImage]);
-
-	const outOfCoins = useMemo(() => {
-		return remainingQuota !== null && remainingQuota <= 0;
-	}, [remainingQuota]);
 
 	return (
 		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
