@@ -78,6 +78,10 @@ const RequestForm = () => {
 							splitFlapIntervalRef.current &&
 								clearInterval(splitFlapIntervalRef.current);
 							setErrorMessage("Generation timed out. Please try again.");
+							setGenerating(false);
+							splitFlapDigitsRef.current = [0, 0];
+							setSplitFlapDigits([0, 0]);
+							console.error("Generation timed out");
 						} else {
 							setTimeout(
 								() =>
