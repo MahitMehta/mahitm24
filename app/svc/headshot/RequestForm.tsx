@@ -94,10 +94,14 @@ const RequestForm = () => {
 						splitFlapIntervalRef.current &&
 							clearInterval(splitFlapIntervalRef.current);
 						setGenerating(false);
+						if (result.message) {
+							setErrorMessage(result.message);
+						} else {
+							setErrorMessage("Generation failed. Please try again.");
+						}
 						splitFlapDigitsRef.current = [0, 0];
 						setSplitFlapDigits([0, 0]);
 						console.debug("Generation failed");
-						setErrorMessage("Generation failed. Please try again.");
 					}
 				})
 				.catch((error) => {
@@ -186,20 +190,20 @@ const RequestForm = () => {
 	const fetchQuotaUsed = useCallback(
 		async (userId: string) => {
 			const fromDate = getMostRecentSunday();
-			const { data } = await supabase
+			const { data, error } = await supabase
 				.from("headshots")
-				.select("cost")
+				.select("cost.sum()")
 				.eq("user_id", userId)
 				.neq("status", "error")
-				.gte("created_at", fromDate);
+				.gte("created_at", fromDate)
+				.single();
 
-			if (!data) {
-				console.error("Error fetching quota used");
+			if (!data || error) {
+				console.error("Error fetching quota used: ", error);
 				return;
 			}
 
-			const totalUsed = data.reduce((acc, item) => acc + (item.cost || 0), 0);
-			setQuotaUsed(totalUsed);
+			setQuotaUsed(data.sum);
 		},
 		[getMostRecentSunday],
 	);
@@ -290,7 +294,7 @@ const RequestForm = () => {
 					console.debug("Generation request successful");
 					setTimeout(() => {
 						pollForResult(data.call_id, data.request_id, user_id, jwt);
-					}, 15 * 1000); // Wait 15 seconds before starting to poll
+					}, 5 * 1000); // Wait 5 seconds before starting to poll
 				}
 			})
 			.catch((error) => {
