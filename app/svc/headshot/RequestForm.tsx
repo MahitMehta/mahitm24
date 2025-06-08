@@ -207,7 +207,7 @@ const RequestForm = () => {
 				return;
 			}
 
-			setQuotaUsed(data.sum);
+			setQuotaUsed(data.sum || 0); // Default to 0 if no data
 		},
 		[getMostRecentSunday],
 	);
