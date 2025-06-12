@@ -39,11 +39,17 @@ const LoginForm = () => {
 	}, [canGoNext]);
 
 	const redirectTo = useMemo(() => {
+		if (typeof window === "undefined") {
+			return "";
+		}
+
 		const origin = window.location.origin;
 
 		const next = searchParams?.get("next");
 		return next ? `${origin}/login?next=${next}` : `${origin}/svc`;
 	}, [searchParams]);
+
+	console.log("Redirecting to:", redirectTo);
 
 	const handleContinueWithOAuth = useCallback(
 		async (provider: "google" | "github") => {

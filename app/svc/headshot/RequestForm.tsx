@@ -91,7 +91,7 @@ const RequestForm = () => {
 						}
 					} else if (result?.status === "success") {
 						console.debug("Generation successful", result.object_paths);
-						splitFlapDigitsRef.current = [0, 0, 1];
+						splitFlapDigitsRef.current = [1, 0, 0];
 						fetchQuotaUsed(userId);
 						fetchSignedImageUrls(result.object_paths);
 					} else if (result?.status === "error") {
