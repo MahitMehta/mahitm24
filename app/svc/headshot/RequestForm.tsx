@@ -39,7 +39,7 @@ const RequestForm = () => {
 	const fetchSignedImageUrls = useCallback(async (objectPaths: string[]) => {
 		const { data, error } = await supabase.storage
 			.from("headshots")
-			.createSignedUrls(objectPaths, 60 * 60); // 1 hour expiration
+			.createSignedUrls(objectPaths, 60 * 60, { download: true }); // 1 hour expiration
 
 		if (error) {
 			console.error("Error getting signed URLs:", error);
@@ -379,7 +379,7 @@ const RequestForm = () => {
 
 	return (
 		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
-			<Card className="!px-1 flex min-w-[240px] sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
+			<Card className="!px-1 flex min-w-[240px] relative sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
 				{selectedHeadshotIndex === null ? (
 					<div
 						onDragOver={handleDragOver}
@@ -414,13 +414,23 @@ const RequestForm = () => {
 						/>
 					</div>
 				) : (
-					<motion.img
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						src={headshotUrls[selectedHeadshotIndex]}
-						alt="AI Headshot"
-						className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
-					/>
+					<>
+						<motion.img
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							src={headshotUrls[selectedHeadshotIndex]}
+							alt="AI Headshot"
+							className="w-full h-full object-cover hover:opacity-65 duration-300 transition"
+						/>
+						<a href={headshotUrls[selectedHeadshotIndex]} download>
+							<BrandBrownButton
+								onClick={() => {}}
+								className="absolute bottom-2 left-1/2 -translate-x-1/2"
+							>
+								Download
+							</BrandBrownButton>
+						</a>
+					</>
 				)}
 			</Card>
 			<Card className="w-full min-h-[360px] flex flex-col">
