@@ -13,6 +13,7 @@ import { useAtomValue } from "jotai";
 import { userAtom } from "@/utils/atom";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Checkbox from "@/components/Checkbox";
 
 const supabase = createSupabaseClient();
 
@@ -36,22 +37,32 @@ const RequestForm = () => {
 	const splitFlapDigitsRef = useRef<number[]>([0, 0]);
 	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
 
-	const fetchSignedImageUrls = useCallback(async (objectPaths: string[]) => {
-		const { data, error } = await supabase.storage
-			.from("headshots")
-			.createSignedUrls(objectPaths, 60 * 60, { download: true }); // 1 hour expiration
+	const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+	const [withLora, setWithLora] = useState(true);
+	const [fixedSeed, setFixedSeed] = useState(false);
+	const [withHairMask, setWithHairMask] = useState(false);
 
-		if (error) {
-			console.error("Error getting signed URLs:", error);
-			return;
-		}
+	const fetchSignedImageUrls = useCallback(
+		async (objectPaths: string[], request_id: string) => {
+			const { data, error } = await supabase.storage
+				.from("headshots")
+				.createSignedUrls(objectPaths, 60 * 60, {
+					download: `mahitm_headshot_${request_id.substring(0, 4)}.jpg`,
+				}); // 1 hour expiration
 
-		const signedUrls = data?.map((item) => item.signedUrl);
-		setHeadshotUrls(signedUrls || []);
-		setSelectedHeadshotIndex(0); // Set to first headshot
+			if (error) {
+				console.error("Error getting signed URLs:", error);
+				return;
+			}
 
-		setGenerating(false);
-	}, []);
+			const signedUrls = data?.map((item) => item.signedUrl);
+			setHeadshotUrls(signedUrls || []);
+			setSelectedHeadshotIndex(0); // Set to first headshot
+
+			setGenerating(false);
+		},
+		[],
+	);
 
 	const pollForResult = useCallback(
 		async (
@@ -93,7 +104,7 @@ const RequestForm = () => {
 						console.debug("Generation successful", result.object_paths);
 						splitFlapDigitsRef.current = [1, 0, 0];
 						fetchQuotaUsed(userId);
-						fetchSignedImageUrls(result.object_paths);
+						fetchSignedImageUrls(result.object_paths, requestId);
 					} else if (result?.status === "error") {
 						splitFlapIntervalRef.current &&
 							clearInterval(splitFlapIntervalRef.current);
@@ -284,6 +295,10 @@ const RequestForm = () => {
 		const formData = new FormData();
 		formData.append("file", inputImage);
 		formData.append("gender", gender);
+		formData.append("user_id", user_id);
+		formData.append("fixed_seed", `${fixedSeed}`);
+		formData.append("with_lora", `${withLora}`);
+		formData.append("with_hair_mask", `${withHairMask}`);
 
 		fetch(`${MODAL_API_URL}/trigger-inference`, {
 			method: "POST",
@@ -318,6 +333,9 @@ const RequestForm = () => {
 		startProgessUpdates,
 		router,
 		outOfCoins,
+		fixedSeed,
+		withLora,
+		withHairMask,
 	]);
 
 	const handleFileUpload = useCallback(
@@ -447,66 +465,90 @@ const RequestForm = () => {
 						Model = mahitm-headshots-v1.1
 					</a>
 				</div>
-				<div className="relative min-h-[100px]">
-					<div
-						className={clsx(
-							"mt-3 ml-1 transition-opacity duration-300 absolute top-0",
-							showCustomizationOptions
-								? "opacity-100"
-								: "opacity-0 pointer-events-none",
-						)}
-					>
-						<div>
-							<p>1. Select Gender</p>
-							<div className="flex gap-2">
-								<Select
-									id={"male"}
-									selectedId={gender}
-									onSelect={setGender}
-									className="w-[125px]"
+				<div className="relative min-h-[100px] mb-4">
+					{showCustomizationOptions ? (
+						<div
+							className={clsx(
+								"mt-3 ml-1 transition-opacity duration-300 flex flex-col gap-2",
+							)}
+						>
+							<div>
+								<p>1. Select Gender</p>
+								<div className="flex gap-2 flex-wrap">
+									<Select
+										id={"male"}
+										selectedId={gender}
+										onSelect={setGender}
+										className="w-[125px]"
+									>
+										<span className="font-bold mr-1">♂</span>Male
+									</Select>
+									<Select
+										id={"female"}
+										selectedId={gender}
+										onSelect={setGender}
+										className="w-[125px]"
+									>
+										<span className="font-bold mr-1">♀</span> Female
+									</Select>
+									<Select
+										id={"non-binary"}
+										selectedId={gender}
+										onSelect={setGender}
+										className="w-[125px]"
+									>
+										<span className="font-bold mr-1">🜬</span>Non-binary
+									</Select>
+								</div>
+							</div>
+							<div>
+								<button
+									onClick={() => {
+										setShowAdvancedOptions(!showAdvancedOptions);
+									}}
+									type="button"
+									className="text-gray-600 underline text-xs cursor-pointer"
 								>
-									<span className="font-bold mr-1">♂</span>Male
-								</Select>
-								<Select
-									id={"female"}
-									selectedId={gender}
-									onSelect={setGender}
-									className="w-[125px]"
-								>
-									<span className="font-bold mr-1">♀</span> Female
-								</Select>
-								<Select
-									id={"non-binary"}
-									selectedId={gender}
-									onSelect={setGender}
-									className="w-[125px]"
-								>
-									<span className="font-bold mr-1">🜬</span>Non-binary
-								</Select>
+									{showAdvancedOptions ? "Hide" : "Show"} Advanced Options
+								</button>
+								{showAdvancedOptions && (
+									<motion.div
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										transition={{ duration: 0.2 }}
+										className="flex gap-2 flex-wrap"
+									>
+										<Checkbox checked={withLora} onCheck={setWithLora}>
+											Use LoRA
+										</Checkbox>
+										<Checkbox checked={fixedSeed} onCheck={setFixedSeed}>
+											Fixed Seed
+										</Checkbox>
+										<Checkbox checked={withHairMask} onCheck={setWithHairMask}>
+											Retain Hair
+										</Checkbox>
+									</motion.div>
+								)}
 							</div>
 						</div>
-					</div>
-					<div
-						className={clsx(
-							"absolute top-2 flex gap-2",
-							showCustomizationOptions && "opacity-0 pointer-events-none",
-						)}
-					>
-						{generating
-							? Array.from({ length: 3 }).map((_, index) => (
-									<HeadshotPreview key={index} index={index} count={3} />
-								))
-							: headshotUrls.map((url, index) => (
-									<HeadshotPreview
-										imageUrl={url}
-										key={index}
-										index={index}
-										count={headshotUrls.length}
-									/>
-								))}
-					</div>
+					) : (
+						<div className={clsx("flex gap-2")}>
+							{generating
+								? Array.from({ length: 3 }).map((_, index) => (
+										<HeadshotPreview key={index} index={index} count={3} />
+									))
+								: headshotUrls.map((url, index) => (
+										<HeadshotPreview
+											imageUrl={url}
+											key={index}
+											index={index}
+											count={headshotUrls.length}
+										/>
+									))}
+						</div>
+					)}
 				</div>
-				<div className="mt-14 sm:mt-auto mb-3">
+				<div className="mt-auto sm:mt-auto mb-3">
 					{errorMessage && (
 						<motion.p
 							initial={{ opacity: 0 }}
