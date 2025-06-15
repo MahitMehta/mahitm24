@@ -20,11 +20,11 @@ const supabase = createSupabaseClient();
 const MODAL_API_URL = "https://mahitmehta--headshots-v11.modal.run";
 
 type genderType = "male" | "female" | "non-binary";
+type aspectRatioType = "1:1" | "2:3";
 
 const RequestForm = () => {
 	const [inputImage, setInputImage] = useState<File | null>(null);
 	const [generating, setGenerating] = useState(false);
-	const [gender, setGender] = useState<genderType | null>(null);
 	const [headshotUrls, setHeadshotUrls] = useState<string[]>([]);
 	const [selectedHeadshotIndex, setSelectedHeadshotIndex] = useState<
 		number | null
@@ -36,6 +36,9 @@ const RequestForm = () => {
 	const splitFlapIntervalRef = useRef<NodeJS.Timeout | null>(null);
 	const splitFlapDigitsRef = useRef<number[]>([0, 0]);
 	const [splitFlapDigits, setSplitFlapDigits] = useState<number[]>([0, 0]);
+
+	const [gender, setGender] = useState<genderType | null>(null);
+	const [aspectRatio, setAspectRatio] = useState<aspectRatioType>("2:3");
 
 	const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 	const [withLora, setWithLora] = useState(true);
@@ -299,6 +302,7 @@ const RequestForm = () => {
 		formData.append("fixed_seed", `${fixedSeed}`);
 		formData.append("with_lora", `${withLora}`);
 		formData.append("with_hair_mask", `${withHairMask}`);
+		formData.append("aspect_ratio", aspectRatio);
 
 		fetch(`${MODAL_API_URL}/trigger-inference`, {
 			method: "POST",
@@ -336,6 +340,7 @@ const RequestForm = () => {
 		fixedSeed,
 		withLora,
 		withHairMask,
+		aspectRatio,
 	]);
 
 	const handleFileUpload = useCallback(
@@ -396,7 +401,7 @@ const RequestForm = () => {
 	}, []);
 
 	return (
-		<div className="flex gap-3 my-3 flex-col sm:flex-row items-center">
+		<div className="flex gap-3 my-3 flex-col sm:flex-row">
 			<Card className="!px-1 flex min-w-[240px] relative sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
 				{selectedHeadshotIndex === null ? (
 					<div
@@ -516,17 +521,45 @@ const RequestForm = () => {
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
 										transition={{ duration: 0.2 }}
-										className="flex gap-2 flex-wrap"
+										className="flex-col flex gap-2"
 									>
-										<Checkbox checked={withLora} onCheck={setWithLora}>
-											Use LoRA
-										</Checkbox>
-										<Checkbox checked={fixedSeed} onCheck={setFixedSeed}>
-											Fixed Seed
-										</Checkbox>
-										<Checkbox checked={withHairMask} onCheck={setWithHairMask}>
-											Retain Hair
-										</Checkbox>
+										<div className="flex gap-2 flex-wrap">
+											<Checkbox checked={withLora} onCheck={setWithLora}>
+												Use LoRA
+											</Checkbox>
+											<Checkbox checked={fixedSeed} onCheck={setFixedSeed}>
+												Fixed Seed
+											</Checkbox>
+											<Checkbox
+												checked={withHairMask}
+												onCheck={setWithHairMask}
+											>
+												Retain Hair
+											</Checkbox>
+										</div>
+										<div>
+											<p>Aspect Ratio</p>
+											<div className="flex gap-2 flex-wrap">
+												<Select
+													id={"2:3"}
+													selectedId={aspectRatio}
+													onSelect={setAspectRatio}
+													className="w-[125px]"
+												>
+													2:3
+												</Select>
+												{!withLora && (
+													<Select
+														id={"1:1"}
+														selectedId={aspectRatio}
+														onSelect={setAspectRatio}
+														className="w-[125px]"
+													>
+														1:1
+													</Select>
+												)}
+											</div>
+										</div>
 									</motion.div>
 								)}
 							</div>
