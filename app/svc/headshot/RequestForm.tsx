@@ -401,7 +401,7 @@ const RequestForm = () => {
 	}, []);
 
 	return (
-		<div className="flex gap-3 my-3 flex-col sm:flex-row">
+		<div className="flex gap-3 my-3 flex-col sm:flex-row sm:items-start items-center">
 			<Card className="!px-1 flex min-w-[240px] relative sm:w-[240px] max-w-[240px] h-[360px] justify-center items-center flex-col">
 				{selectedHeadshotIndex === null ? (
 					<div
