@@ -3,17 +3,17 @@
 import BrandBrownButton from "@/components/BrandBrownButton";
 import Select from "@/components/BrandBrownButton/Select";
 import Card from "@/components/Card";
+import Checkbox from "@/components/Checkbox";
+import SplitFlapGroup from "@/components/SplitFlapCountdown/SplitFlapGroup";
+import { userAtom } from "@/utils/atom";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import { CogIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { motion } from "framer-motion";
+import { useAtomValue } from "jotai";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import HeadshotPreview from "./HeadshotPreview";
-import SplitFlapGroup from "@/components/SplitFlapCountdown/SplitFlapGroup";
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/utils/atom";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import Checkbox from "@/components/Checkbox";
 
 const supabase = createSupabaseClient();
 

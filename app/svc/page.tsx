@@ -3,8 +3,8 @@ import Footer from "@/components/Footer";
 import Platform from "@/components/Platform";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
-import { getEventsPreview } from "@/utils/contentful/events";
 import { ECountdownType } from "@/interfaces/svc";
+import { getEventsPreview } from "@/utils/contentful/events";
 import Search from "./Search";
 
 export const revalidate = 3600;

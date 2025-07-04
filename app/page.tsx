@@ -200,7 +200,7 @@ export default function Home() {
 								</Link>
 							</div>
 						}
-						label={"Resume [2024]"}
+						label={"Resume [2025]"}
 					>
 						<div className="relative">
 							<img
@@ -211,9 +211,9 @@ export default function Home() {
 								style={{
 									width: "100%",
 									height: "auto",
-									filter: "invert(1)",
+									// filter: "invert(1)",
 								}}
-								src="/cdn/v1/t/q_auto:best/resume.webp"
+								src="/cdn/v1/t/q_auto:best/resume.png"
 								alt={"Resume"}
 							/>
 						</div>

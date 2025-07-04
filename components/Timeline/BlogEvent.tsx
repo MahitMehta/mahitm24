@@ -1,7 +1,7 @@
 import type { IArticleEvent, IEvent } from "@/interfaces/contentful";
 import Image from "next/image";
-import GoArrow from "../GoArrow";
 import Link from "next/link";
+import GoArrow from "../GoArrow";
 
 interface BlogEventProps {
 	event: IEvent<IArticleEvent>;

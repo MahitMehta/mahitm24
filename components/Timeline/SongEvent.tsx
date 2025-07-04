@@ -1,4 +1,4 @@
-import type { ISongEvent, IEvent } from "@/interfaces/contentful";
+import type { IEvent, ISongEvent } from "@/interfaces/contentful";
 import { useMemo } from "react";
 
 interface SongEventProps {

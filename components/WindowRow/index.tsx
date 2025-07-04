@@ -1,8 +1,8 @@
 "use client";
 
 import PosterWindowSVG from "@/public/svg/poster_window.svg";
-import BasicWindowSVG from "@/public/svg/window.svg";
 import StickerWindow from "@/public/svg/sticker_window.svg";
+import BasicWindowSVG from "@/public/svg/window.svg";
 
 const WindowRow = () => {
 	return (

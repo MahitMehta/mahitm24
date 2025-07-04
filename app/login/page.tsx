@@ -1,8 +1,8 @@
 import Footer from "@/components/Footer";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
-import LoginForm from "./LoginForm";
 import { Suspense } from "react";
+import LoginForm from "./LoginForm";
 
 export const revalidate = 3600;
 

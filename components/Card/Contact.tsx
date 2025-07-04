@@ -1,6 +1,6 @@
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Card from ".";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import GoArrow from "../GoArrow";
 
 interface ContactCardProps {

@@ -1,9 +1,9 @@
 "use server";
 
-import { gql } from "graphql-request";
-import { fetchContentful } from "./client";
 import type { IEventCollection } from "@/interfaces/contentful";
+import { gql } from "graphql-request";
 import { draftMode } from "next/headers";
+import { fetchContentful } from "./client";
 
 const eventsPreviewQuery = gql`
 	query EventsCollection($limit: Int, $skip: Int, $preview: Boolean) {

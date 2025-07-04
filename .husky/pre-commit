@@ -1,0 +1,3 @@
+npx tsc --noEmit
+npm run lint
+git add .

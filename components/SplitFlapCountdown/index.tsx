@@ -1,7 +1,7 @@
+import clsx from "clsx";
+import type { ReactNode } from "react";
 import Countdown from "react-countdown";
 import SplitFlapGroup from "./SplitFlapGroup";
-import type { ReactNode } from "react";
-import clsx from "clsx";
 
 interface ISplitFlapCountdownProps {
 	futureDate: number;

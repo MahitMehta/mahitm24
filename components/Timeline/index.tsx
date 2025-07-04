@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
 import type { IEventCollection } from "@/interfaces/contentful";
-import useEmblaCarousel from "embla-carousel-react";
-import Event from "./Event";
+import { getEventsPreview } from "@/utils/contentful/events";
 import {
 	ArrowPathIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { getEventsPreview } from "@/utils/contentful/events";
+import useEmblaCarousel from "embla-carousel-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Event from "./Event";
 
 interface TimelineProps {
 	events: IEventCollection;

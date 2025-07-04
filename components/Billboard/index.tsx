@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
 import clsx from "clsx";
+import { useEffect, useMemo } from "react";
 
 import DefaultBillboardSVG from "@/public/svg/billboard.svg";
 import BlogBillboardSVG from "@/public/svg/blog-billboard.svg";
 import NewYearBillboardSVG from "@/public/svg/holiday-billboard.svg";
 import DefaultSVCBillboardSVG from "@/public/svg/svc-billboard.svg";
 
-import dynamic from "next/dynamic";
 import {
 	EBillboardMode,
 	ECountdownType,
 	type IServiceConfig,
 } from "@/interfaces/svc";
+import dynamic from "next/dynamic";
 
 const GeneralCountdown = dynamic(
 	() => import("@/components/Countdown/GeneralCountdown"),

@@ -1,10 +1,10 @@
 "use client";
 
-import Card from ".";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import clsx from "clsx";
+import { useState } from "react";
 import type { MouseEvent, ReactNode } from "react";
+import Card from ".";
 
 interface ExpandableCardProps {
 	label: string;

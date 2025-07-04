@@ -1,11 +1,11 @@
 "use client";
 
-import clsx from "clsx";
-import Link from "next/link";
-import GoArrow from "../GoArrow";
-import { useAtomValue } from "jotai";
 import { userAtom } from "@/utils/atom";
+import clsx from "clsx";
+import { useAtomValue } from "jotai";
+import Link from "next/link";
 import { useMemo } from "react";
+import GoArrow from "../GoArrow";
 
 interface IHighlightItemProps {
 	href: string;

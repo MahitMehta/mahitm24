@@ -1,9 +1,9 @@
 "use client";
 
-import Script from "next/script";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import type { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { useCallback, useEffect } from "react";
 
 const GoogleOneTap = ({ redirectTo }: { redirectTo: string }) => {

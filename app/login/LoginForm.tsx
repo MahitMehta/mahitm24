@@ -3,18 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import GoArrow from "@/components/GoArrow";
 import Card from "@/components/Card";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import GoArrow from "@/components/GoArrow";
+import GoogleOneTap from "@/components/GoogleOneTap";
 import { createSupabaseClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import GoogleOneTap from "@/components/GoogleOneTap";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { motion } from "framer-motion";
-import clsx from "clsx";
 import BrandBrownButton from "@/components/BrandBrownButton";
 import { isValidEmail } from "@/utils/common";
 import { CogIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
 const supabase = createSupabaseClient();
 

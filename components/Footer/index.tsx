@@ -1,21 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import Card from "../Card";
 import MahitMLogo from "@/public/svg/logo.svg";
+import { userAtom } from "@/utils/atom";
+import { createSupabaseClient } from "@/utils/supabase/client";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
 	faGithub,
 	faInstagram,
 	faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import { useAtom } from "jotai";
-import { userAtom } from "@/utils/atom";
-import { useCallback, useEffect } from "react";
-import { createSupabaseClient } from "@/utils/supabase/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
+import Card from "../Card";
 
 interface LinkIconProps {
 	href: string;

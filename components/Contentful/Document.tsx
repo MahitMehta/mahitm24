@@ -1,18 +1,18 @@
-import { useMemo } from "react";
+import {
+	type Options as DocumentOptions,
+	documentToReactComponents,
+} from "@contentful/rich-text-react-renderer";
 import {
 	BLOCKS,
-	INLINES,
-	MARKS,
 	type Block,
 	type Document as DocumentType,
+	INLINES,
 	type Inline,
+	MARKS,
 } from "@contentful/rich-text-types";
-import {
-	documentToReactComponents,
-	type Options as DocumentOptions,
-} from "@contentful/rich-text-react-renderer";
 import clsx from "clsx";
 import Link from "next/link";
+import { useMemo } from "react";
 import Card from "../Card";
 
 interface DocumentProps {

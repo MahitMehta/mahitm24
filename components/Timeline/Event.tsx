@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { LockClosedIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
 import {
 	EventType,
-	type IVideoEvent,
-	type IEvent,
 	type IArticleEvent,
+	type IEvent,
 	type ISongEvent,
+	type IVideoEvent,
 } from "@/interfaces/contentful";
-import BlogEvent from "./BlogEvent";
 import { getFormattedDate } from "@/utils/common";
-import VideoEvent from "./VideoEvent";
+import { LockClosedIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { useEffect, useMemo } from "react";
+import BlogEvent from "./BlogEvent";
 import SongEvent from "./SongEvent";
+import VideoEvent from "./VideoEvent";
 
 interface IEventProps {
 	className?: string;

@@ -1,10 +1,10 @@
+import Card from "@/components/Card";
+import Document from "@/components/Contentful/Document";
 import {
 	EMediaType,
 	type IArticleEvent,
 	type IEvent,
 } from "@/interfaces/contentful";
-import Document from "@/components/Contentful/Document";
-import Card from "@/components/Card";
 
 interface IBlogArticleProps {
 	event: IEvent<IArticleEvent>;

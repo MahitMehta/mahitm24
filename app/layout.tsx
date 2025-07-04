@@ -1,6 +1,6 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Jersey_15 } from "next/font/google";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import ReactQueryProvider from "@/utils/ReactQueryProvider";
 

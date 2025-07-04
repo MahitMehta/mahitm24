@@ -2,21 +2,21 @@ import Billboard from "@/components/Billboard";
 import Footer from "@/components/Footer";
 import Sky from "@/components/Sky";
 import { getServiceConfig } from "@/helpers/serviceConfig";
-import type { Metadata } from "next";
-import { gql } from "graphql-request";
-import { fetchContentful } from "@/utils/contentful/client";
 import type {
-	IVideoEvent,
 	IArticleEvent,
 	IEvent,
 	IEventCollection,
+	IVideoEvent,
 } from "@/interfaces/contentful";
 import { EventType } from "@/interfaces/contentful";
+import { fetchContentful } from "@/utils/contentful/client";
+import { gql } from "graphql-request";
+import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 import BlogArticle from "./BlogArticle";
-import BlogVideo from "./BlogVideo";
 import BlogDate from "./BlogDate";
-import { draftMode } from "next/headers";
+import BlogVideo from "./BlogVideo";
 
 export const revalidate = 900;
 

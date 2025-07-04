@@ -1,9 +1,9 @@
 "use client";
 
-import useMobile from "@/hooks/useMobile";
 import SplitFlapCountdown from "@/components/SplitFlapCountdown";
-import React, { useMemo } from "react";
+import useMobile from "@/hooks/useMobile";
 import { getTimezoneOffset } from "date-fns-tz";
+import React, { useMemo } from "react";
 
 const NewYearCountdown = () => {
 	const newYearDate = useMemo(() => {

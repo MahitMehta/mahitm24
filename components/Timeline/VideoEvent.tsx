@@ -1,8 +1,8 @@
-import type { IVideoEvent, IEvent } from "@/interfaces/contentful";
+import type { IEvent, IVideoEvent } from "@/interfaces/contentful";
 import Image from "next/image";
-import GoArrow from "../GoArrow";
 import Link from "next/link";
 import { useMemo } from "react";
+import GoArrow from "../GoArrow";
 
 interface VideoEventProps {
 	event: IEvent<IVideoEvent>;
